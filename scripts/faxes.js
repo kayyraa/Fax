@@ -50,44 +50,47 @@ function LoadFaxes() {
                 CreatorLabel.innerHTML = `@${Author}`;
                 TitleLabel.appendChild(CreatorLabel);
 
-                const Tags = {
-                    "<i>": "i",
-                    "<b>": "b",
-                    "<u>": "u",
-                    "<sub>" : "sub",
-                    "<sup>" : "sup",
-                    "<code>" : "code",
-                    "<pre>" : "pre",
-                    "<bq>" : "blockquote"
-                };
-                
                 const Words = Content.split(" ");
+
                 const ContentLabel = document.createElement("p");
                 FaxButton.appendChild(ContentLabel);
-                
+
                 Words.forEach(Word => {
-                    let Tag = "span";
-                    let CleanWord = Word;
-                
-                    for (const [Key, Value] of Object.entries(Tags)) {
-                        if (Word.startsWith(Key) && Word.endsWith(`</${Value}>`)) {
-                            Tag = Value;
-                            CleanWord = ` ${Word.replace(Key, "").replace(`</${Value}>`, "")}`;
-                            break;
-                        }
+                    if (Word.startsWith("<i>") && Word.endsWith("</i>")) {
+                        const TextNode = document.createElement("i");
+                        TextNode.innerHTML = ` ${Word.replace("<i>", "").replace("</i>", "")}`;
+                        ContentLabel.appendChild(TextNode);
+                    } else if (Word.startsWith("<b>") && Word.endsWith("</b>")) {
+                        const TextNode = document.createElement("b");
+                        TextNode.innerHTML = ` ${Word.replace("<b>", "").replace("</b>", "")}`;
+                        ContentLabel.appendChild(TextNode);
+                    } else if (Word.startsWith("<bq>") && Word.endsWith("</bq>")) {
+                        const TextNode = document.createElement("blockquote");
+                        TextNode.innerHTML = ` ${Word.replace("<bq>", "").replace("</bq>", "")}`;
+                        ContentLabel.appendChild(TextNode);
+                    } else if (Word.startsWith("<code>") && Word.endsWith("</code>")) {
+                        const TextNode = document.createElement("code");
+                        TextNode.innerHTML = ` ${Word.replace("<code>", "").replace("</code>", "")}`;
+                        ContentLabel.appendChild(TextNode);
+                    } else if (Word.startsWith("<pre>") && Word.endsWith("</pre>")) {
+                        const TextNode = document.createElement("pre");
+                        TextNode.innerHTML = ` ${Word.replace("<pre>", "").replace("</pre>", "")}`;
+                        ContentLabel.appendChild(TextNode);
                     }
-                
-                    const TextNode = document.createElement(Tag);
-                    TextNode.textContent = CleanWord;
-                    ContentLabel.appendChild(TextNode);
-                });                
+                    
+                    else {
+                        const TextNode = document.createElement("span");
+                        TextNode.innerHTML = ` ${Word}`;
+                        ContentLabel.appendChild(TextNode);
+                    }
+                });       
 
                 const StatusBar = document.createElement("div");
                 StatusBar.classList.add("StatusBar");
                 FaxButton.appendChild(StatusBar);
 
                 const ViewCountLabel = document.createElement("span");
-                ViewCountLabel.innerHTML = `${Fax.views} Views`;
+                ViewCountLabel.innerHTML = `${Fax.views} View${parseInt(Fax.views) > 1 ? "s" : ""}`;
                 StatusBar.appendChild(ViewCountLabel);
 
                 const Division = document.createElement("division");
@@ -112,7 +115,6 @@ function LoadFaxes() {
                 RemoveButton.style.right = "1.5%";
                 RemoveButton.style.color = "rgb(225, 55, 55)";
                 RemoveButton.style.fontSize = "4vh";
-                RemoveButton.style.visibility = "hidden";
                 RemoveButton.innerHTML = "Remove";
                 FaxButton.appendChild(RemoveButton);
 
@@ -168,14 +170,12 @@ function LoadFaxes() {
                 }
 
                 FaxButton.addEventListener("click", async function(Event) {
-                    if (Event.target === LikeButton) return;
-
-                    RemoveButton.style.visibility = getComputedStyle(ContentLabel).visibility !== "visible" ? IsAuthor ? "visible" : "hidden" : "hidden";
+                    if (Event.target === LikeButton || Event.target === RemoveButton) return;
 
                     FaxesContainer.scrollTop = 0;
                     
                     ContentLabel.style.visibility = getComputedStyle(ContentLabel).visibility === "visible" ? "hidden" : "visible";
-                    this.style.zIndex = "2";
+                    this.style.zIndex = "1";
                     this.style.position = getComputedStyle(ContentLabel).visibility === "visible" ? "absolute" : "";
                     this.style.height = getComputedStyle(ContentLabel).visibility === "visible" ? "100%" : "26vh";
 

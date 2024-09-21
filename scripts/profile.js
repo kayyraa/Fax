@@ -50,7 +50,7 @@ UsernameLabel.addEventListener("click", async () => {
             }
         });
 
-        ProfilePostsLabel.innerHTML = `${UserFaxes} Posts`;
-        ProfileLikesLabel.innerHTML = `${UserLikes} Likes`;
+        ProfilePostsLabel.innerHTML = `${UserFaxes} Post${UserFaxes > 1 ? "s" : ""}`;
+        ProfileLikesLabel.innerHTML = `${UserLikes} Like${UserLikes > 1 ? "s" : ""}`;
     }
 });
