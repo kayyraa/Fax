@@ -126,6 +126,7 @@ function LoadFaxes() {
                     const DocData = await DocSnapshot.data();
 
                     var IsAuthor = Author === DocData.username;
+                    RemoveButton.style.visibility = IsAuthor ? "visible" : "hidden";
 
                     if (Array.from(Fax.likedBy).includes(DocData.username)) {
                         LikeButton.src = "../images/Liked.svg";
