@@ -1,37 +1,22 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Fax Paged</title>
+        <title>Account</title>
 
         <link rel="stylesheet" href="scripts/style/style.css">
         <link rel="shortcut icon" href="images/Favicon.svg" type="image/x-icon">
 
-        <script type="module" src="scripts/profile.js"></script>
         <script type="module" src="scripts/account.js"></script>
-        <script type="module" src="scripts/faxes.js"></script>
-        <script type="module" src="scripts/faxpro.js"></script>
 
         <script type="module" src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js"></script>
         <script type="module" src="https://www.gstatic.com/firebasejs/10.13.2/firebase-analytics.js"></script>
     </head>
     <body>
-        <div id="Topbar" class="Topbar">
-            <span id="UsernameLabel">LOGGING IN</span>
-        </div>
-
-        <div class="FaxesContainer" id="FaxesContainer">
-            <div id="FaxCreateButton" class="FaxButton">
-                <input id="FaxTitleInput" autocomplete="off" placeholder="Title..." type="text">
-                <input id="FaxContentInput" autocomplete="off" placeholder="Content..." type="text">
-                <button id="FaxSubmitButton">Submit</button>
-            </div>
-        </div>
-
-        <div class="Profile" id="Profile">
-            <div id="ProfileUsernameLabel">@username</div>
-            <div id="ProfileLikesLabel">0 Likes</div>
-            <div id="ProfilePostsLabel">0 Posts</div>
-            <button onclick="window.location.href = './index.html'" id="ProfileBackButton">Back</button>
+        <div class="AccountForm">
+            <h1>Account</h1>
+            <input id="UsernameInput" autocomplete="off" maxlength="16" placeholder="Username" type="text">
+            <input id="PasswordInput" autocomplete="off" placeholder="Password" type="password">
+            <button id="SubmitButton">Submit</button>
         </div>
 
         <script type="module">
