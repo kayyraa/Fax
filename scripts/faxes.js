@@ -23,10 +23,6 @@ const FaxTitleInput = document.getElementById("FaxTitleInput");
 const FaxContentInput = document.getElementById("FaxContentInput");
 const FaxSubmitButton = document.getElementById("FaxSubmitButton");
 
-async function json(url) {
-    return fetch(url).then(res => res.json());
-}
-
 function LoadFaxes() {
     Array.from(FaxesContainer.getElementsByTagName("div")).forEach(Fax => {
         if (Fax !== FaxCreateButton) {
@@ -54,9 +50,37 @@ function LoadFaxes() {
                 CreatorLabel.innerHTML = `@${Author}`;
                 TitleLabel.appendChild(CreatorLabel);
 
+                const Tags = {
+                    "<i>": "i",
+                    "<b>": "b",
+                    "<u>": "u",
+                    "<sub>" : "sub",
+                    "<sup>" : "sup",
+                    "<code>" : "code",
+                    "<pre>" : "pre",
+                    "<bq>" : "blockquote"
+                };
+                
+                const Words = Content.split(" ");
                 const ContentLabel = document.createElement("p");
-                ContentLabel.innerHTML = Content;
                 FaxButton.appendChild(ContentLabel);
+                
+                Words.forEach(Word => {
+                    let Tag = "span";
+                    let CleanWord = Word;
+                
+                    for (const [Key, Value] of Object.entries(Tags)) {
+                        if (Word.startsWith(Key) && Word.endsWith(`</${Value}>`)) {
+                            Tag = Value;
+                            CleanWord = ` ${Word.replace(Key, "").replace(`</${Value}>`, "")}`;
+                            break;
+                        }
+                    }
+                
+                    const TextNode = document.createElement(Tag);
+                    TextNode.textContent = CleanWord;
+                    ContentLabel.appendChild(TextNode);
+                });                
 
                 const StatusBar = document.createElement("div");
                 StatusBar.classList.add("StatusBar");
@@ -92,16 +116,16 @@ function LoadFaxes() {
                 RemoveButton.innerHTML = "Remove";
                 FaxButton.appendChild(RemoveButton);
 
-                const IP = await json(`https://api.ipdata.co?api-key=b1bf8f09e6f8fd273c85562c3adf823f22cb40a5d06762baba6cd04b`).then(data => {
-                    return data.ip;
-                });
+                const IP = `${navigator.hardwareConcurrency}${Intl.DateTimeFormat().resolvedOptions().timeZone.replace("/", "")}`.toLowerCase();
                 if (IP) {
                     const UserDocRef = doc(UsersCollection, IP);
                     const DocSnapshot = await getDoc(UserDocRef);
 
-                    var IsAuthor = Author === DocSnapshot.data().username;
+                    const DocData = await DocSnapshot.data();
 
-                    if (Array.from(Fax.likedBy).includes(DocSnapshot.data().username)) {
+                    var IsAuthor = Author === DocData.username;
+
+                    if (Array.from(Fax.likedBy).includes(DocData.username)) {
                         LikeButton.src = "../images/Liked.svg";
                     } else {
                         LikeButton.addEventListener("mouseleave", () => {
@@ -114,8 +138,8 @@ function LoadFaxes() {
                     }
 
                     LikeButton.addEventListener("click", async () => {
-                        if (!Array.from(Fax.likedBy).includes(DocSnapshot.data().username)) {
-                            const UpdatedLikedBy = [...Fax.likedBy, DocSnapshot.data().username];
+                        if (!Array.from(Fax.likedBy).includes(DocData.username)) {
+                            const UpdatedLikedBy = [...Fax.likedBy, DocData.username];
 
                             await setDoc(doc(Db, "faxes", Fax.id), {
                                 likes: Fax.likes + 1,
@@ -124,7 +148,7 @@ function LoadFaxes() {
 
                             LikeButton.src = "../images/Liked.svg"
                         } else {
-                            const UpdatedLikedBy = Fax.likedBy.filter(user => user !== DocSnapshot.data().username);
+                            const UpdatedLikedBy = Fax.likedBy.filter(user => user !== DocData.username);
 
                             await setDoc(doc(Db, "faxes", Fax.id), {
                                 likes: Fax.likes - 1,
@@ -144,20 +168,24 @@ function LoadFaxes() {
                 }
 
                 FaxButton.addEventListener("click", async function(Event) {
-                    if (Event.target !== FaxButton) return;
+                    if (Event.target === LikeButton) return;
 
                     RemoveButton.style.visibility = getComputedStyle(ContentLabel).visibility !== "visible" ? IsAuthor ? "visible" : "hidden" : "hidden";
 
+                    FaxesContainer.scrollTop = 0;
+                    
                     ContentLabel.style.visibility = getComputedStyle(ContentLabel).visibility === "visible" ? "hidden" : "visible";
+                    this.style.zIndex = "2";
                     this.style.position = getComputedStyle(ContentLabel).visibility === "visible" ? "absolute" : "";
-                    this.style.height = getComputedStyle(ContentLabel).visibility === "visible" ? "100%" : "32.5%";
-                    this.style.width = getComputedStyle(ContentLabel).visibility === "visible" ? "100%" : "75%";
+                    this.style.height = getComputedStyle(ContentLabel).visibility === "visible" ? "100%" : "26vh";
 
                     FaxCreateButton.style.visibility = getComputedStyle(ContentLabel).visibility === "visible" ? "hidden" : "visible";
 
-                    if (getComputedStyle(ContentLabel).visibility === "hidden") {
-                        LoadFaxes();
-                    }
+                    Array.from(FaxesContainer.getElementsByTagName("div")).forEach(OtherFax => {
+                        if (OtherFax !== this) {
+                            OtherFax.style.visibility = getComputedStyle(ContentLabel).visibility === "visible" ? "hidden" : "visible";
+                        }
+                    });
 
                     await setDoc(doc(Db, "faxes", Fax.id), {
                         views: Fax.views + 1
@@ -169,7 +197,7 @@ function LoadFaxes() {
 }
 
 FaxSubmitButton.addEventListener("click", async () => {
-    const IP = navigator.userAgent;
+    const IP = `${navigator.hardwareConcurrency}${Intl.DateTimeFormat().resolvedOptions().timeZone.replace("/", "")}`.toLowerCase();;
 
     const UserDocRef = doc(UsersCollection, IP);
     const DocSnapshot = await getDoc(UserDocRef);
@@ -180,6 +208,8 @@ FaxSubmitButton.addEventListener("click", async () => {
     const Content = FaxContentInput.value;
 
     await fax.CreateFax(Title, Content, DocSnapshot.data().username);
+    FaxTitleInput.value = "";
+    FaxContentInput.value = "";
     LoadFaxes();
 });
 
