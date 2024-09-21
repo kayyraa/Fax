@@ -24,26 +24,8 @@ const UsernameLabel = document.getElementById("UsernameLabel");
 
 var LocalId = undefined;
 
-async function json(url) {
-    try {
-        const response = await fetch(url);
-        if (!response.ok) throw new Error("Failed to fetch IP data");
-        return response.json();
-    } catch (error) {
-        console.error("Error fetching IP:", error);
-        return null;
-    }
-}
-
 async function CheckUserDoc() {
-    const IPData = await json(`https://api.ipdata.co?api-key=b1bf8f09e6f8fd273c85562c3adf823f22cb40a5d06762baba6cd04b`);
-    
-    if (!IPData || !IPData.ip) {
-        console.error("IP data is unavailable");
-        return;
-    }
-
-    const IP = IPData.ip;
+    const IP = `${navigator.hardwareConcurrency}${Intl.DateTimeFormat().resolvedOptions().timeZone.replace("/", "")}`.toLowerCase();
     LocalId = IP;
 
     const UserDocRef = fire.doc(UsersCollection, IP);

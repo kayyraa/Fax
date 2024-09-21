@@ -169,10 +169,7 @@ function LoadFaxes() {
 }
 
 FaxSubmitButton.addEventListener("click", async () => {
-    const IP = await json(`https://api.ipdata.co?api-key=b1bf8f09e6f8fd273c85562c3adf823f22cb40a5d06762baba6cd04b`).then(data => {
-        return data.ip;
-    });
-    if (!IP) return;
+    const IP = navigator.userAgent;
 
     const UserDocRef = doc(UsersCollection, IP);
     const DocSnapshot = await getDoc(UserDocRef);
