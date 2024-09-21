@@ -110,6 +110,41 @@ function LoadFaxes() {
                 LikeButton.style.height = "4vh";
                 StatusBar.appendChild(LikeButton);
 
+                const StateLabel = document.createElement("img");
+                StateLabel.src = "../images/Unset.svg";
+                StateLabel.style.height = "4vh";
+                StateLabel.style.marginLeft = "2.5%";
+                StatusBar.appendChild(StateLabel);
+
+                const Division3 = document.createElement("division");
+                Division3.innerHTML = "|";
+                StatusBar.appendChild(Division3);
+
+                if (Fax.views > Fax.likes) {
+                    StateLabel.src = "../images/Down.svg";
+                } else if (Fax.views < Fax.likes) {
+                    StateLabel.src = "../images/Up.svg";
+                } else {
+                    StateLabel.src = "../images/Unset.svg";
+                }
+
+                const TimeAgo = (t1, t2, x) => {
+                    let diff = t2 - t1;
+                    let mins = 60, hrs = 3600, days = 86400, months = 2592000, years = 31536000;
+                    if (x) {
+                        return diff < mins ? `${diff}s ago` : diff < hrs ? `${Math.floor(diff / mins)}m ago` : diff < days ? `${Math.floor(diff / hrs)}h ago` : 
+                           diff < months ? `${Math.floor(diff / days)}d ago` : diff < years ? `${Math.floor(diff / months)}mo ago` : `${Math.floor(diff / years)}y ago`;
+                    } else {
+                        return diff;
+                    }
+                };
+
+                const TimestampLabel = document.createElement("span");
+                TimestampLabel.innerHTML = TimeAgo(Fax.timestamp, Math.floor(Date.now() / 1000), true);
+                StatusBar.appendChild(TimestampLabel);
+
+                FaxButton.style.order = TimeAgo(Fax.timestamp, Math.floor(Date.now() / 1000), false);
+
                 const RemoveButton = document.createElement("div");
                 RemoveButton.style.position = "absolute";
                 RemoveButton.style.right = "1.5%";

@@ -56,7 +56,8 @@ async function CheckUserDoc() {
         });
     } else {
         const UserData = DocSnapshot.data();
-        window.username = UserData.username
+        window.username = UserData.username;
+        window.userdata = UserData;
         UsernameLabel.innerHTML = `@${UserData.username}`;
     }
 }

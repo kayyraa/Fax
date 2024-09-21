@@ -21,8 +21,8 @@ input:hover {
 }
 
 division {
-    margin-left: 5%;
-    margin-right: 5%;
+    margin-left: 2.5%;
+    margin-right: 2.5%;
 }
 
 smlb {
@@ -50,13 +50,13 @@ smlb[disabled="false"] {
     display: flex;
     flex-direction: column;
     position: absolute;
-    width: 80%;
+    width: 90%;
     height: 85%;
     background-color: rgb(80, 80, 80);
     left: 50%;
     top: 55%;
     transform: translate(-50%, -50%);
-    border-radius: 2.5vh;
+    border-radius: 2vh;
     font-size: 5vh;
     align-items: center;
     overflow-x: hidden;
@@ -73,12 +73,17 @@ smlb[disabled="false"] {
     width: 95%;
     height: 26vh;
     background-color: rgb(60, 60, 60);
-    border-radius: 2.5vh;
+    border-radius: 2vh;
     overflow: hidden;
     transition: all 0.25s ease;
 
     flex-grow: 0;
     flex-shrink: 0;
+}
+
+.FaxButton span {
+    text-align: center;
+    font-size: 2vh;
 }
 
 .FaxButton sub {
@@ -189,7 +194,7 @@ smlb[disabled="false"] {
     top: 55%;
     transform: translate(-50%, -50%);
 
-    width: 80%;
+    width: 90%;
     height: 85%;
     background-color: rgb(80, 80, 80);
 
@@ -204,7 +209,21 @@ smlb[disabled="false"] {
 }
 
 #FaxCreateButton {
-    order: -1;
+    order: -9999999999;
+}
+
+#FaxCreateButton input {
+    font-size: 2vh;
+    background-color: rgb(40, 40, 40);
+    color: white;
+    border: none;
+}
+
+#FaxCreateButton button {
+    background-color: rgb(40, 40, 40);
+    border: none;
+    color: rgba(255, 255, 255, 0.75);
+    height: 50%;
 }
 
 #UsernameLabel {
@@ -222,6 +241,14 @@ smlb[disabled="false"] {
 
 #ProfileUsernameLabel {
     margin-top: 2.5%;
+}
+
+#ProfileStateLabel {
+    width: 8vh;
+}
+
+#ProfileBackButton {
+    width: 24vh;
 }
 
 .Profile div {
