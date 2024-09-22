@@ -112,7 +112,7 @@ function LoadFaxes() {
                 const StateLabel = document.createElement("img");
                 StateLabel.src = "../images/Unset.svg";
                 StateLabel.style.height = "4vh";
-                StateLabel.style.marginLeft = "2.5%";
+                StateLabel.style.marginLeft = "1.5vh";
                 StatusBar.appendChild(StateLabel);
 
                 const Division3 = document.createElement("division");
@@ -151,7 +151,7 @@ function LoadFaxes() {
                 RemoveButton.style.borderRadius = "2.5em";
                 RemoveButton.style.paddingLeft = "1.5vh";
                 RemoveButton.style.paddingRight = "1.5vh";
-                RemoveButton.style.marginTop = "1.5vh";
+                RemoveButton.style.bottom = "6vh";
                 RemoveButton.innerHTML = "Remove";
                 FaxButton.appendChild(RemoveButton);
 
@@ -244,6 +244,8 @@ FaxSubmitButton.addEventListener("click", async () => {
 
     const Title = FaxTitleInput.value;
     const Content = FaxContentInput.value;
+
+    if (!Title || !Content) return;
 
     await fax.CreateFax(Title, Content, DocSnapshot.data().username);
     FaxTitleInput.value = "";
