@@ -94,20 +94,19 @@ function LoadFaxes() {
                 StatusBar.appendChild(ViewCountLabel);
 
                 const Division = document.createElement("division");
-                Division.innerHTML = "|";
                 StatusBar.appendChild(Division);
 
                 const LikeCountLabel = document.createElement("span");
                 LikeCountLabel.innerHTML = `${Fax.likes} Like${parseInt(Fax.likes) > 1 ? "s" : ""}`;
+                LikeCountLabel.setAttribute("link", "");
                 StatusBar.appendChild(LikeCountLabel);
                 
                 const Division2 = document.createElement("division");
-                Division2.innerHTML = "|";
                 StatusBar.appendChild(Division2);
 
                 const LikeButton = document.createElement("img");
                 LikeButton.src = "../images/NotLiked.svg";
-                LikeButton.style.height = "4vh";
+                LikeButton.style.height = "3vh";
                 StatusBar.appendChild(LikeButton);
 
                 const StateLabel = document.createElement("img");
@@ -117,7 +116,6 @@ function LoadFaxes() {
                 StatusBar.appendChild(StateLabel);
 
                 const Division3 = document.createElement("division");
-                Division3.innerHTML = "|";
                 StatusBar.appendChild(Division3);
 
                 if (Fax.views > Fax.likes) {
@@ -147,9 +145,13 @@ function LoadFaxes() {
 
                 const RemoveButton = document.createElement("div");
                 RemoveButton.style.position = "absolute";
-                RemoveButton.style.right = "1.5%";
-                RemoveButton.style.color = "rgb(225, 55, 55)";
-                RemoveButton.style.fontSize = "4vh";
+                RemoveButton.style.right = "1.25%";
+                RemoveButton.style.fontSize = "2.5vh";
+                RemoveButton.style.backgroundColor = "rgba(200, 0, 0, 0.5)";
+                RemoveButton.style.borderRadius = "2.5em";
+                RemoveButton.style.paddingLeft = "1.5vh";
+                RemoveButton.style.paddingRight = "1.5vh";
+                RemoveButton.style.marginTop = "1.5vh";
                 RemoveButton.innerHTML = "Remove";
                 FaxButton.appendChild(RemoveButton);
 

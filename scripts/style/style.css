@@ -20,9 +20,23 @@ input:hover {
     opacity: 0.75;
 }
 
+*[link]:hover {
+    text-decoration: underline;
+    color: #89a3da;
+}
+
+a:hover {
+    text-decoration: underline;
+    color: #89a3da;
+}
+
 division {
     margin-left: 2.5%;
     margin-right: 2.5%;
+}
+
+division::before {
+    content: "-";
 }
 
 smlb {
@@ -50,13 +64,14 @@ smlb[disabled="false"] {
     display: flex;
     flex-direction: column;
     position: absolute;
-    width: 90%;
-    height: 85%;
-    background-color: rgb(80, 80, 80);
+    width: 75%;
+    height: 90%;
+    box-sizing: border-box;
+    border-left: 1px solid rgba(255, 255, 255, 0.25);
+    border-right: 1px solid rgba(255, 255, 255, 0.25);
     left: 50%;
     top: 55%;
     transform: translate(-50%, -50%);
-    border-radius: 2vh;
     font-size: 5vh;
     align-items: center;
     overflow-x: hidden;
@@ -72,8 +87,10 @@ smlb[disabled="false"] {
     margin-bottom: 1vh;
     width: 95%;
     height: 26vh;
-    background-color: rgb(60, 60, 60);
+
     border-radius: 2vh;
+
+    background-color: rgb(50, 50, 50);
     overflow: hidden;
     transition: all 0.25s ease;
 
@@ -81,9 +98,14 @@ smlb[disabled="false"] {
     flex-shrink: 0;
 }
 
+.FaxButton:hover {
+    background-color: rgb(55, 55, 55);
+    cursor: pointer;
+}
+
 .FaxButton span {
     text-align: center;
-    font-size: 2vh;
+    font-size: 1.8vh;
 }
 
 .FaxButton sub {
@@ -108,7 +130,7 @@ smlb[disabled="false"] {
 .FaxButton h1 {
     margin-left: 3%;
     font-weight: 400;
-    font-size: 75%;
+    font-size: 50%;
     
     transition: font-size 0.25s ease;
 }
@@ -117,11 +139,6 @@ smlb[disabled="false"] {
     visibility: hidden;
     margin-left: 3%;
     font-size: 60%;
-}
-
-.FaxButton:hover {
-    background-color: rgb(70, 70, 70);
-    cursor: pointer;
 }
 
 .StatusBar {
@@ -138,6 +155,13 @@ smlb[disabled="false"] {
 
     align-items: center;
     justify-content: center;
+}
+
+.StatusBar span {
+    border-radius: 2.5em;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding-left: 1.5vh;
+    padding-right: 1.5vh;
 }
 
 .Topbar {
@@ -158,6 +182,23 @@ smlb[disabled="false"] {
     justify-content: center;
 
     transition: all 0.25s ease;
+}
+
+.TopbarIcon {
+    left: 1.5%;
+    position: absolute;
+    cursor: pointer;
+    height: 75%;
+    transition: all 0.25s ease;
+}
+
+.TopbarIcon:hover {
+    scale: 1.125;
+}
+
+.Topbar * {
+    margin-left: 1.5vh;
+    margin-right: 1.5vh;
 }
 
 .AccountForm {
@@ -191,11 +232,11 @@ smlb[disabled="false"] {
 .Profile {
     position: absolute;
     left: 50%;
-    top: 55%;
+    top: 50%;
     transform: translate(-50%, -50%);
 
     width: 90%;
-    height: 85%;
+    height: 90%;
     background-color: rgb(80, 80, 80);
 
     visibility: hidden;
@@ -206,10 +247,6 @@ smlb[disabled="false"] {
 
     align-items: center;
     justify-content: center;
-}
-
-#FaxCreateButton {
-    order: -9999999999;
 }
 
 #FaxCreateButton input {
