@@ -307,7 +307,7 @@ division::before {
 
     width: 75%;
     height: 75%;
-    background-color: rgba(60, 60, 60, 0.5);
+    background-color: rgba(60, 60, 60, 0.75);
     backdrop-filter: blur(7.5px);
 
     align-items: center;
