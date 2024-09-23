@@ -1,5 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
-import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
+import { getFirestore, collection, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
+import * as fax from "./faxpro.js";
 
 const FirebaseConfig = {
     apiKey: "AIzaSyCMyS_nsuyVbEfMB06TY7cfUMK2Kj5qk9Q",
@@ -15,19 +16,18 @@ const App = initializeApp(FirebaseConfig);
 const Db = getFirestore(App);
 
 const FaxesCollection = collection(Db, "faxes");
+const UsersCollection = collection(Db, "users");
 
 const Topbar = document.getElementById("Topbar");
-
 const FaxesContainer = document.getElementById("FaxesContainer");
 const UsernameLabel = document.getElementById("UsernameLabel");
-
 const ProfileContainer = document.getElementById("Profile");
 const ProfileUsernameLabel = document.getElementById("ProfileUsernameLabel");
 const ProfileLikesLabel = document.getElementById("ProfileLikesLabel");
 const ProfileViewsLabel = document.getElementById("ProfileViewsLabel");
 const ProfilePostsLabel = document.getElementById("ProfilePostsLabel");
 const ProfileTimestampLabel = document.getElementById("ProfileTimestampLabel");
-const ProfileStateLabel = document.getElementById("ProfileStateLabel");
+const ProfileRemoveAccountButton = document.getElementById("ProfileRemoveAccountButton");
 
 var Toggle = false;
 var UserFaxes = 0;
@@ -68,13 +68,12 @@ UsernameLabel.addEventListener("click", async () => {
         ProfileLikesLabel.innerHTML = `${UserLikes} Like${UserLikes > 1 ? "s" : ""}`;
         ProfileViewsLabel.innerHTML = `${UserViews} View${UserViews > 1 ? "s" : ""}`;
         ProfileTimestampLabel.innerHTML = FormatDate(window.userdata.register);
-
-        if ((UserLikes + UserFaxes) > (UserViews - UserFaxes)) {
-            ProfileStateLabel.src = "../images/Up.svg";
-        } else if ((UserLikes + UserFaxes) < (UserViews - UserFaxes)) {
-            ProfileStateLabel.src = "../images/Down.svg";
-        } else {
-            ProfileStateLabel.src = "../images/Unset.svg";
-        }
     }
+});
+
+ProfileRemoveAccountButton.addEventListener("click", async () => {
+    const IP = fax.GetUUID();
+    const UserDocRef = doc(UsersCollection, IP);
+    await deleteDoc(UserDocRef);
+    window.location.reload();
 });

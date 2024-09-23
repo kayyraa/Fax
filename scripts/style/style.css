@@ -11,13 +11,22 @@ body {
     -webkit-user-select: none !important;
 }
 
+button {
+    font-family: "DM Mono", monospace;
+    border: none;
+}
+
+input {
+    font-family: "DM Mono", monospace;
+}
+
 button:hover {
-    opacity: 0.75;
+    opacity: 0.8;
     cursor: pointer;
 }
 
 input:hover {
-    opacity: 0.75;
+    opacity: 0.8;
 }
 
 *[link]:hover {
@@ -37,27 +46,6 @@ division {
 
 division::before {
     content: "-";
-}
-
-smlb {
-    background-color: rgba(255, 255, 255, 0.1);
-    padding-left: 1.5vh;
-    padding-right: 1.5vh;
-    border-radius: 1vh;
-}
-
-smlb:hover {
-    background-color: rgba(255, 255, 255, 0.35);
-}
-
-smlb[disabled="true"] {
-    opacity: 0.75;
-    pointer-events: none;
-}
-
-smlb[disabled="false"] {
-    opacity: 1;
-    pointer-events: auto;
 }
 
 .FaxesContainer {
@@ -114,14 +102,12 @@ smlb[disabled="false"] {
 }
 
 .FaxButton input {
-    font-family: "DM Mono", monospace;
     text-align: center;
     width: 100%;
     height: 35%;
 }
 
 .FaxButton button {
-    font-family: "DM Mono", monospace;
     text-align: center;
     width: 100%;
     height: 25%;
@@ -173,7 +159,11 @@ smlb[disabled="false"] {
     left: 0;
     width: 100%;
     height: 10%;
-    background-color: rgb(40, 40, 40);
+
+    background-color: rgba(50, 50, 50, 0.5);
+    backdrop-filter: blur(2px);
+
+    z-index: 1;
 
     font-size: 4.5vh;
 
@@ -220,33 +210,22 @@ smlb[disabled="false"] {
     overflow: hidden;
 }
 
-.AccountForm input, button {
-    height: 22.5%;
+.AccountForm input {
+    margin-top: 1vh;
+    height: 6vh;
     text-align: center;
-    font-family: "DM Mono", monospace;
-    border-radius: 0;
+    border-radius: 10em;
     border: none;
     font-size: 100%;
 }
 
-.Profile {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-
-    width: 90%;
-    height: 90%;
-    background-color: rgb(80, 80, 80);
-
-    visibility: hidden;
-
-    border-radius: 2.5vh;
-
-    font-size: 5vh;
-
-    align-items: center;
-    justify-content: center;
+.AccountForm button {
+    margin-top: 1vh;
+    height: 6vh;
+    text-align: center;
+    border-radius: 10em;
+    border: none;
+    font-size: 100%;
 }
 
 #FaxCreateButton input {
@@ -268,44 +247,45 @@ smlb[disabled="false"] {
 }
 
 #UsernameLabel:hover {
-    background: -webkit-linear-gradient(#000000, #eee);
-    background: linear-gradient(to top right, #eee, #000000);
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    opacity: 0.5;
     cursor: pointer;
 }
 
-#ProfileUsernameLabel {
-    margin-top: 2.5%;
+.Profile {
+    display: flex;
+    flex-direction: column;
+
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+
+    width: 90%;
+    height: 100%;
+    background-color: rgb(70, 70, 70);
+    border-left: 2px solid rgba(255, 255, 255, 0.25);
+    border-right: 2px solid rgba(255, 255, 255, 0.25);
+
+    visibility: hidden;
+
+    font-size: 5vh;
 }
 
-#ProfileStateLabel {
-    width: 8vh;
-}
-
-#ProfileBackButton {
-    width: 24vh;
-}
-
-.Profile div {
-    margin-left: 5%;
+.Profile * {
+    margin-left: 5vh;
+    margin-top: 1.25vh;
 }
 
 .Profile button {
-    margin-left: 5%;
-    width: 17.5%;
-    height: 7.5%;
-    font-size: 100%;
+    width: 42.5vh;
+    height: 6vh;
+    font-size: 4vh;
     border-radius: 1em;
     background-color: black;
     color: white;
 
-    text-align: center;
-    justify-content: center;
-    align-items: center;
-    align-content: center;
-    padding-bottom: 0.5%;
+    padding-left: 3vh;
+    padding-right: 3vh;
 
     transition: all 0.25s ease;
 }
@@ -314,4 +294,69 @@ smlb[disabled="false"] {
     background-color: white;
     color: black;
     opacity: 1;
+}
+
+.LikedByContainer {
+    display: flex;
+    flex-direction: column;
+
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+
+    width: 25%;
+    height: 75%;
+    background-color: rgba(60, 60, 60, 0.75);
+    backdrop-filter: blur(7.5px);
+
+    align-items: center;
+
+    visibility: hidden;
+    overflow: hidden;
+}
+
+.LikedByContainer div {
+    margin-top: 2vh;
+    font-size: 2vh;
+    text-align: center;
+}
+
+.LikedByContainer div:hover {
+    color: #89a3da;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.LikedByContainer ldiv {
+    opacity: 0.5;
+}
+
+#LikedByContainerCloseButton {
+    position: absolute;
+    right: 2.5vh;
+    top: 1.25vh;
+    font-size: 3vh;
+    cursor: pointer;
+}
+
+#LikedByContainerCloseButton:hover {
+    color: red;
+}
+
+::-webkit-scrollbar {
+    width: 5px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.5);
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+    cursor: pointer;
 }

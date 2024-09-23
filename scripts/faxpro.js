@@ -33,3 +33,14 @@ export async function CreateFax(Title, Content, Creator) {
     });
     return FaxRef;
 }
+
+export function GetUUID() {
+    const CoreMapping = {};
+    const Letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    
+    for (let Index = 1; Index <= 26; Index++) {
+        CoreMapping[Index] = Letters[Index - 1];
+    }
+
+    return `${navigator.hardwareConcurrency}${CoreMapping[navigator.hardwareConcurrency]}${Intl.DateTimeFormat().resolvedOptions().timeZone.replace("/", "")}`.trim().toLowerCase();
+}

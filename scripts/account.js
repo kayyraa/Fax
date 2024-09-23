@@ -1,5 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
 import * as fire from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
+import * as fax from "./faxpro.js";
 
 const FirebaseConfig = {
     apiKey: "AIzaSyCMyS_nsuyVbEfMB06TY7cfUMK2Kj5qk9Q",
@@ -25,7 +26,7 @@ const UsernameLabel = document.getElementById("UsernameLabel");
 var LocalId = undefined;
 
 async function CheckUserDoc() {
-    const IP = `${navigator.hardwareConcurrency}${Intl.DateTimeFormat().resolvedOptions().timeZone.replace("/", "")}`.toLowerCase();
+    const IP = fax.GetUUID();
     LocalId = IP;
 
     const UserDocRef = fire.doc(UsersCollection, IP);

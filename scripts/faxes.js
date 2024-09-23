@@ -99,6 +99,57 @@ function LoadFaxes() {
                 const LikeCountLabel = document.createElement("span");
                 LikeCountLabel.innerHTML = `${Fax.likes} Like${parseInt(Fax.likes) > 1 ? "s" : ""}`;
                 LikeCountLabel.setAttribute("link", "");
+                LikeCountLabel.onclick = () => {
+                    Array.from(document.getElementById('LikedByContainer').getElementsByTagName("div")).forEach(LikeByDiv => {
+                        LikeByDiv.remove();
+                    });
+
+                    document.getElementById('LikedByContainer').style.visibility = 'visible';
+                    Fax.likedBy.forEach(User => {
+                        const LikedByDiv = document.createElement("div");
+                        LikedByDiv.innerHTML = `@${User}`;
+                        document.getElementById('LikedByContainer').appendChild(LikedByDiv);
+
+                        LikedByDiv.addEventListener("click", async () => {
+                            Array.from(document.getElementById('LikedByContainer').getElementsByTagName("div")).forEach(LikeByDiv => {
+                                LikeByDiv.remove();
+                            });
+                            
+                            const LikerProfile = document.createElement("div");
+                            LikerProfile.innerHTML = `@${User}`;
+                            document.getElementById('LikedByContainer').appendChild(LikerProfile);
+
+                            const LikerQueryRef = await query(UsersCollection, where("username", "==", User));
+                            const QuerySnapshot = await getDocs(LikerQueryRef);
+                            QuerySnapshot.forEach((Doc) => {
+                                const ConvertSecsToDate = (Seconds) => {
+                                    const DateObject = new Date(Seconds * 1000);
+                                    const Day = String(DateObject.getDate()).padStart(2, '0');
+                                    const Month = String(DateObject.getMonth() + 1).padStart(2, '0');
+                                    const Year = DateObject.getFullYear();
+                                
+                                    return `${Day}.${Month}.${Year}`;
+                                };
+
+                                const Data = Doc.data();
+                                const Timestamp = Data.register;
+                                var Views = 0;
+                                var Likes = 0;
+
+                                Faxes.forEach(Fax => {
+                                    if (Fax.author === User) {
+                                        Views += Fax.views;
+                                        Likes += Fax.likes;
+                                    }
+                                });
+
+                                LikerProfile.innerHTML += `<br>Registered: ${ConvertSecsToDate(Timestamp)}`;
+                                LikerProfile.innerHTML += `<br>Views: ${Views}`;
+                                LikerProfile.innerHTML += `<br>Likes: ${Likes}`;
+                            });
+                        });
+                    });
+                };
                 StatusBar.appendChild(LikeCountLabel);
                 
                 const Division2 = document.createElement("division");
@@ -109,22 +160,8 @@ function LoadFaxes() {
                 LikeButton.style.height = "3vh";
                 StatusBar.appendChild(LikeButton);
 
-                const StateLabel = document.createElement("img");
-                StateLabel.src = "../images/Unset.svg";
-                StateLabel.style.height = "4vh";
-                StateLabel.style.marginLeft = "1.5vh";
-                StatusBar.appendChild(StateLabel);
-
                 const Division3 = document.createElement("division");
                 StatusBar.appendChild(Division3);
-
-                if (Fax.views > Fax.likes) {
-                    StateLabel.src = "../images/Down.svg";
-                } else if (Fax.views < Fax.likes) {
-                    StateLabel.src = "../images/Up.svg";
-                } else {
-                    StateLabel.src = "../images/Unset.svg";
-                }
 
                 const TimeAgo = (t1, t2, x) => {
                     let diff = t2 - t1;
@@ -151,11 +188,11 @@ function LoadFaxes() {
                 RemoveButton.style.borderRadius = "2.5em";
                 RemoveButton.style.paddingLeft = "1.5vh";
                 RemoveButton.style.paddingRight = "1.5vh";
-                RemoveButton.style.bottom = "6vh";
+                RemoveButton.style.bottom = "8vh";
                 RemoveButton.innerHTML = "Remove";
                 FaxButton.appendChild(RemoveButton);
 
-                const IP = `${navigator.hardwareConcurrency}${Intl.DateTimeFormat().resolvedOptions().timeZone.replace("/", "")}`.toLowerCase();
+                const IP = fax.GetUUID();
                 if (IP) {
                     const UserDocRef = doc(UsersCollection, IP);
                     const DocSnapshot = await getDoc(UserDocRef);
@@ -208,22 +245,11 @@ function LoadFaxes() {
                 }
 
                 FaxButton.addEventListener("click", async function(Event) {
-                    if (Event.target === LikeButton || Event.target === RemoveButton) return;
-
-                    FaxesContainer.scrollTop = 0;
+                    if (Event.target === LikeButton || Event.target === RemoveButton || Event.target === LikeCountLabel) return;
                     
                     ContentLabel.style.visibility = getComputedStyle(ContentLabel).visibility === "visible" ? "hidden" : "visible";
                     this.style.zIndex = "1";
-                    this.style.position = getComputedStyle(ContentLabel).visibility === "visible" ? "absolute" : "";
-                    this.style.height = getComputedStyle(ContentLabel).visibility === "visible" ? "100%" : "26vh";
-
-                    FaxCreateButton.style.visibility = getComputedStyle(ContentLabel).visibility === "visible" ? "hidden" : "visible";
-
-                    Array.from(FaxesContainer.getElementsByTagName("div")).forEach(OtherFax => {
-                        if (OtherFax !== this) {
-                            OtherFax.style.visibility = getComputedStyle(ContentLabel).visibility === "visible" ? "hidden" : "visible";
-                        }
-                    });
+                    this.style.height = getComputedStyle(ContentLabel).visibility === "visible" ? "36vh" : "26vh";
 
                     await setDoc(doc(Db, "faxes", Fax.id), {
                         views: Fax.views + 1
@@ -235,7 +261,7 @@ function LoadFaxes() {
 }
 
 FaxSubmitButton.addEventListener("click", async () => {
-    const IP = `${navigator.hardwareConcurrency}${Intl.DateTimeFormat().resolvedOptions().timeZone.replace("/", "")}`.toLowerCase();;
+    const IP = fax.GetUUID();
 
     const UserDocRef = doc(UsersCollection, IP);
     const DocSnapshot = await getDoc(UserDocRef);
