@@ -133,11 +133,14 @@ function LoadFaxes() {
 
                                 const Data = Doc.data();
                                 const Timestamp = Data.register;
+                                
                                 var Views = 0;
                                 var Likes = 0;
+                                var Posts = 0;
 
                                 Faxes.forEach(Fax => {
                                     if (Fax.author === User) {
+                                        Posts++;
                                         Views += Fax.views;
                                         Likes += Fax.likes;
                                     }
@@ -146,6 +149,7 @@ function LoadFaxes() {
                                 LikerProfile.innerHTML += `<br>Registered: ${ConvertSecsToDate(Timestamp)}`;
                                 LikerProfile.innerHTML += `<br>Views: ${Views}`;
                                 LikerProfile.innerHTML += `<br>Likes: ${Likes}`;
+                                LikerProfile.innerHTML += `<br>Posts: ${Posts}`;
                             });
                         });
                     });
