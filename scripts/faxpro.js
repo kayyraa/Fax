@@ -42,5 +42,5 @@ export function GetUUID() {
         CoreMapping[Index] = Letters[Index - 1];
     }
 
-    return `${navigator.hardwareConcurrency}${CoreMapping[navigator.hardwareConcurrency]}${Intl.DateTimeFormat().resolvedOptions().timeZone.replace("/", "")}`.trim().toLowerCase();
+    return `${navigator.language.slice(0, 2)}${navigator.hardwareConcurrency}${CoreMapping[navigator.hardwareConcurrency]}${Intl.DateTimeFormat().resolvedOptions().timeZone.replace("/", "")}`.trim().toLowerCase();
 }

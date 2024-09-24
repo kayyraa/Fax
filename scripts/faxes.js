@@ -238,8 +238,6 @@ function LoadFaxes() {
 
                             LikeButton.src = "../images/NotLiked.svg"
                         }
-
-                        LoadFaxes();
                     });
 
                     RemoveButton.addEventListener("click", async () => {
