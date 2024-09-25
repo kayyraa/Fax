@@ -23,11 +23,8 @@ const SubmitButton = document.getElementById("SubmitButton");
 
 const UsernameLabel = document.getElementById("UsernameLabel");
 
-var LocalId = undefined;
-
 async function CheckUserDoc() {
     const IP = fax.GetUUID();
-    LocalId = IP;
 
     const UserDocRef = fire.doc(UsersCollection, IP);
     const DocSnapshot = await fire.getDoc(UserDocRef);

@@ -22,8 +22,12 @@ const FaxCreateButton = document.getElementById("FaxCreateButton");
 const FaxTitleInput = document.getElementById("FaxTitleInput");
 const FaxContentInput = document.getElementById("FaxContentInput");
 const FaxSubmitButton = document.getElementById("FaxSubmitButton");
+const FilterButton = document.getElementById("FilterButton");
+const FilterInput = document.getElementById("FilterInput");
 
-function LoadFaxes() {
+function LoadFaxes(OnlyLoadOptions = {
+    OnlyLoadWithTheseWords: []
+}) {
     Array.from(FaxesContainer.getElementsByTagName("div")).forEach(Fax => {
         if (Fax !== FaxCreateButton) {
             Fax.remove();
@@ -34,6 +38,15 @@ function LoadFaxes() {
         const Faxes = await fax.GetAllFaxes();
         if (Faxes.length > 0) {
             Faxes.forEach(async Fax => {
+                if (OnlyLoadOptions.OnlyLoadWithTheseWords && OnlyLoadOptions.OnlyLoadWithTheseWords.length > 0) {
+                    const IncludesInTitle = OnlyLoadOptions.OnlyLoadWithTheseWords.some(Character => Fax.title.includes(Character));
+                    const IncludesInContent = OnlyLoadOptions.OnlyLoadWithTheseWords.some(Character => Fax.content.includes(Character));
+                
+                    if (!IncludesInTitle && !IncludesInContent) {
+                        return;
+                    }
+                }                              
+
                 const Title = Fax.title;
                 const Content = Fax.content;
                 const Author = Fax.author;
@@ -146,10 +159,11 @@ function LoadFaxes() {
                                     }
                                 });
 
-                                LikerProfile.innerHTML += `<br>Registered: ${ConvertSecsToDate(Timestamp)}`;
-                                LikerProfile.innerHTML += `<br>Views: ${Views}`;
-                                LikerProfile.innerHTML += `<br>Likes: ${Likes}`;
-                                LikerProfile.innerHTML += `<br>Posts: ${Posts}`;
+                                LikerProfile.innerHTML = `@${User}` +
+                                `<br>Registered: ${ConvertSecsToDate(Timestamp)}` +
+                                `<br>Views: ${Views}` +
+                                `<br>Likes: ${Likes}` +
+                                `<br>Posts: ${Posts}`;
                             });
                         });
                     });
@@ -208,8 +222,16 @@ function LoadFaxes() {
 
                     if (Array.from(Fax.likedBy).includes(DocData.username)) {
                         LikeButton.src = "../images/Liked.svg";
+
+                        LikeButton.addEventListener("mouseleave", function() {
+                            LikeButton.src = "../images/Liked.svg"
+                        });
+
+                        LikeButton.addEventListener("mouseenter", () => {
+                            LikeButton.src = "../images/NotLiked.svg"
+                        });
                     } else {
-                        LikeButton.addEventListener("mouseleave", () => {
+                        LikeButton.addEventListener("mouseleave", function() {
                             LikeButton.src = "../images/NotLiked.svg"
                         });
 
@@ -279,6 +301,12 @@ FaxSubmitButton.addEventListener("click", async () => {
     FaxTitleInput.value = "";
     FaxContentInput.value = "";
     LoadFaxes();
+});
+
+FilterButton.addEventListener("click", () => {
+    LoadFaxes({
+        OnlyLoadWithTheseWords: FilterInput.value.split(", ")
+    });
 });
 
 document.addEventListener("DOMContentLoaded", LoadFaxes);
