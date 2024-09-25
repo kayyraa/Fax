@@ -242,6 +242,10 @@ division::before {
     height: 50%;
 }
 
+#ResultsLabel {
+    font-size: 2vh;
+}
+
 #UsernameLabel {
     transition: all 0.25s ease;
 }

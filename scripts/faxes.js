@@ -24,10 +24,18 @@ const FaxContentInput = document.getElementById("FaxContentInput");
 const FaxSubmitButton = document.getElementById("FaxSubmitButton");
 const FilterButton = document.getElementById("FilterButton");
 const FilterInput = document.getElementById("FilterInput");
+const ResultsLabel = document.getElementById("ResultsLabel");
 
 function LoadFaxes(OnlyLoadOptions = {
-    OnlyLoadWithTheseWords: []
+    OnlyLoadWithTheseWords: [],
+    OnlyLoadWithThisLikes: 0,
+    OnlyLoadWithThisViews: 0,
+    OnlyLoadWithHigherViewsThan: 0,
+    OnlyLoadWithHigherLikesThan: 0,
+    OnlyLoadWithLowerViewsThan: 0,
+    OnlyLoadWithLowerLikesThan: 0,
 }) {
+    var Results = 0;
     Array.from(FaxesContainer.getElementsByTagName("div")).forEach(Fax => {
         if (Fax !== FaxCreateButton) {
             Fax.remove();
@@ -45,7 +53,45 @@ function LoadFaxes(OnlyLoadOptions = {
                     if (!IncludesInTitle && !IncludesInContent) {
                         return;
                     }
-                }                              
+                }
+
+                if (OnlyLoadOptions.OnlyLoadWithThisLikes) {
+                    if (Fax.likes !== OnlyLoadOptions.OnlyLoadWithThisLikes) {
+                        return;
+                    }
+                }
+
+                if (OnlyLoadOptions.OnlyLoadWithThisViews) {
+                    if (Fax.views !== OnlyLoadOptions.OnlyLoadWithThisViews) {
+                        return;
+                    }
+                }
+
+                if (OnlyLoadOptions.OnlyLoadWithHigherLikesThan) {
+                    if (Fax.likes > OnlyLoadOptions.OnlyLoadWithHigherLikesThan) {
+                        return;
+                    }
+                }
+
+                if (OnlyLoadOptions.OnlyLoadWithHigherViewsThan) {
+                    if (Fax.views > OnlyLoadOptions.OnlyLoadWithHigherViewsThan) {
+                        return;
+                    }
+                }
+
+                if (OnlyLoadOptions.OnlyLoadWithLowerLikesThan) {
+                    if (Fax.likes < OnlyLoadOptions.OnlyLoadWithLowerLikesThan) {
+                        return;
+                    }
+                }
+
+                if (OnlyLoadOptions.OnlyLoadWithLowerViewsThan) {
+                    if (Fax.views < OnlyLoadOptions.OnlyLoadWithLowerViewsThan) {
+                        return;
+                    }
+                }
+
+                Results++;
 
                 const Title = Fax.title;
                 const Content = Fax.content;
@@ -280,8 +326,42 @@ function LoadFaxes(OnlyLoadOptions = {
                     }, { merge: true });
                 });
             });
+
+            ResultsLabel.innerHTML = `${Results} Results`;
         }
     })();
+}
+
+function Filter() {
+    if (FilterInput.value.startsWith("views: ")) {
+        LoadFaxes({
+            OnlyLoadWithThisViews: parseInt(FilterInput.value.replace("views: ", ""))
+        });
+    } else if (FilterInput.value.startsWith("likes: ")) {
+        LoadFaxes({
+            OnlyLoadWithThisLikes: parseInt(FilterInput.value.replace("likes: ", ""))
+        });
+    } else if (FilterInput.value.startsWith("views<: ")) {
+        LoadFaxes({
+            OnlyLoadWithLowerViewsThan: parseInt(FilterInput.value.replace("views<: ", ""))
+        });
+    } else if (FilterInput.value.startsWith("likes<: ")) {
+        LoadFaxes({
+            OnlyLoadWithLowerLikesThan: parseInt(FilterInput.value.replace("likes<: ", ""))
+        });
+    } else if (FilterInput.value.startsWith("views>: ")) {
+        LoadFaxes({
+            OnlyLoadWithHigherViewsThan: parseInt(FilterInput.value.replace("views>: ", ""))
+        });
+    } else if (FilterInput.value.startsWith("likes>: ")) {
+        LoadFaxes({
+            OnlyLoadWithHigherLikesThan: parseInt(FilterInput.value.replace("likes>: ", ""))
+        });
+    } else {
+        LoadFaxes({
+            OnlyLoadWithTheseWords: FilterInput.value.split(", ")
+        });
+    }
 }
 
 FaxSubmitButton.addEventListener("click", async () => {
@@ -304,9 +384,13 @@ FaxSubmitButton.addEventListener("click", async () => {
 });
 
 FilterButton.addEventListener("click", () => {
-    LoadFaxes({
-        OnlyLoadWithTheseWords: FilterInput.value.split(", ")
-    });
+    Filter();
+});
+
+FilterInput.addEventListener("keypress", (Event) => {
+    if (Event.key === "Enter") {
+        Filter();
+    }
 });
 
 document.addEventListener("DOMContentLoaded", LoadFaxes);
