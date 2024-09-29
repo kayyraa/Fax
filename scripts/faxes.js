@@ -291,7 +291,8 @@ function LoadFaxes(OnlyLoadOptions = {
                         const CurrentReplies = FaxDocSnapshot.data().replies || [];
                         CurrentReplies.push({
                             author: DocData.username,
-                            message: ReplyValue
+                            message: ReplyValue,
+                            timestamp: Math.floor(Date.now() / 1000)
                         });
                     
                         await updateDoc(FaxDocRef, {
@@ -315,7 +316,8 @@ function LoadFaxes(OnlyLoadOptions = {
                     Fax.replies.forEach(Reply => {
                         const ReplyMessage = document.createElement("div");
                         ReplyMessage.classList.add("ReplyMessage");
-                        ReplyMessage.innerHTML = `@${Reply.author} - ${Reply.message}`;
+                        ReplyMessage.innerHTML = `@${Reply.author} - ${Reply.message} - ${TimeAgo(Reply.timestamp, Math.floor(Date.now() / 1000), true)}`;
+                        ReplyMessage.style.order = TimeAgo(Reply.timestamp, Math.floor(Date.now() / 1000), false);
                         RepliesContainer.appendChild(ReplyMessage);
                     });
                 } else {
