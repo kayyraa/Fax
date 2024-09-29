@@ -79,7 +79,6 @@ division::before {
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 
     background-color: rgb(50, 50, 50);
-    overflow: hidden;
     transition: all 0.25s ease;
 
     flex-grow: 0;
@@ -125,6 +124,54 @@ division::before {
     visibility: hidden;
     margin-left: 3%;
     font-size: 60%;
+}
+
+.ReplyContainer {
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.25);
+    text-align: center;
+    visibility: hidden;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.ReplyContainer > button {
+    background-color: rgba(0, 0, 0, 0.25);
+    color: white;
+    font-size: 2vh;
+    height: 30%;
+    width: 100%;
+}
+
+.ReplyContainer > input {
+    color: white;
+    background-color: rgba(0, 0, 0, 0.25);
+    border-top: 2px solid rgba(255, 255, 255, 0.25);
+}
+
+.RepliesContainer {
+    border-top: 2px solid rgba(255, 255, 255, 0.25);
+    width: 100%;
+    height: 75%;
+    background-color: rgba(0, 0, 0, 0.5);
+    overflow-x: hidden;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.RepliesContainer > header {
+    text-align: center;
+    width: 100%;
+    font-size: 2vh;
+}
+
+.RepliesContainer > div {
+    border-top: 2px solid rgba(255, 255, 255, 0.25);
+    border-bottom: 2px solid rgba(255, 255, 255, 0.25);
+    text-align: center;
+    font-size: 2.5vh;
 }
 
 .StatusBar {

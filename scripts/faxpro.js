@@ -14,7 +14,6 @@ const FirebaseConfig = {
 const App = initializeApp(FirebaseConfig);
 const Db = getFirestore(App);
 const FaxesCollection = collection(Db, "faxes");
-const UsersCollection = collection(Db, "users");
 
 export async function GetAllFaxes() {
     const Snapshot = await getDocs(FaxesCollection);
@@ -29,6 +28,7 @@ export async function CreateFax(Title, Content, Creator) {
         views: 0,
         likes: 0,
         likedBy: [],
+        replies: [],
         timestamp: Math.floor(Date.now() / 1000)
     });
     return FaxRef;
