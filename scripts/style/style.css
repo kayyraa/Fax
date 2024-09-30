@@ -199,6 +199,7 @@ a:hover {
 }
 
 .StatusBar span {
+    text-wrap: nowrap;
     text-align: center;
     border-radius: 2.5em;
     font-size: 1.4vh;
