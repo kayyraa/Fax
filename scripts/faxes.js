@@ -314,11 +314,22 @@ function LoadFaxes(OnlyLoadOptions = {
 
                 if (Fax.replies.length > 0) {
                     Fax.replies.forEach(Reply => {
+                        const ReplyContainer = document.createElement("div");
+                        ReplyContainer.style.order = TimeAgo(Reply.timestamp, Math.floor(Date.now() / 1000), false);
+                        RepliesContainer.appendChild(ReplyContainer);
+
+                        const ReplyAuthor = document.createElement("div");
+                        ReplyAuthor.innerHTML = `@${Reply.author} -`;
+                        ReplyAuthor.setAttribute("link", "true");
+                        ReplyContainer.appendChild(ReplyAuthor);
+
                         const ReplyMessage = document.createElement("div");
-                        ReplyMessage.classList.add("ReplyMessage");
-                        ReplyMessage.innerHTML = `@${Reply.author} - ${Reply.message} - ${TimeAgo(Reply.timestamp, Math.floor(Date.now() / 1000), true)}`;
-                        ReplyMessage.style.order = TimeAgo(Reply.timestamp, Math.floor(Date.now() / 1000), false);
-                        RepliesContainer.appendChild(ReplyMessage);
+                        ReplyMessage.innerHTML = `${Reply.message} -`;
+                        ReplyContainer.appendChild(ReplyMessage);
+
+                        const ReplyTimestamp = document.createElement("div");
+                        ReplyTimestamp.innerHTML = TimeAgo(Reply.timestamp, Math.floor(Date.now() / 1000), true);
+                        ReplyContainer.appendChild(ReplyTimestamp);
                     });
                 } else {
                     const NoRepliesMessage = document.createElement("div");
