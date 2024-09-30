@@ -15,11 +15,6 @@ const App = initializeApp(FirebaseConfig);
 const Db = getFirestore(App);
 const FaxesCollection = collection(Db, "faxes");
 
-export async function GetAllFaxes() {
-    const Snapshot = await getDocs(FaxesCollection);
-    return Snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-}
-
 export async function CreateFax(Title, Content, Creator) {
     const FaxRef = await addDoc(FaxesCollection, {
         title: Title,

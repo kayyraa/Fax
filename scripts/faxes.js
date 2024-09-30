@@ -45,7 +45,8 @@ function LoadFaxes(OnlyLoadOptions = {
     });
 
     (async () => {
-        const Faxes = await fax.GetAllFaxes();
+        const Snapshot = await getDocs(FaxesCollection);
+        const Faxes = await Snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         if (Faxes.length > 0) {
             Faxes.forEach(async Fax => {
                 if (OnlyLoadOptions.OnlyLoadWithThisAuthor) {
@@ -122,7 +123,9 @@ function LoadFaxes(OnlyLoadOptions = {
                 const ContentLabel = document.createElement("p");
                 FaxButton.appendChild(ContentLabel);
 
-                Words.forEach(Word => {
+                for (let Index = 0; Index < Words.length; Index++) {
+                    const Word = Words[Index];
+
                     if (Word.startsWith("<i>") && Word.endsWith("</i>")) {
                         const TextNode = document.createElement("i");
                         TextNode.innerHTML = ` ${Word.replace("<i>", "").replace("</i>", "")}`;
@@ -143,6 +146,12 @@ function LoadFaxes(OnlyLoadOptions = {
                         const TextNode = document.createElement("pre");
                         TextNode.innerHTML = ` ${Word.replace("<pre>", "").replace("</pre>", "")}`;
                         ContentLabel.appendChild(TextNode);
+                    } else if (Word.startsWith("https://")) {
+                        const TextNode = document.createElement("pre");
+                        TextNode.setAttribute("hreflink", "true");
+                        TextNode.innerHTML = Index !== 0 ? ` ${Word}` : Word;
+                        TextNode.onclick = () => window.location.href = Word;
+                        ContentLabel.appendChild(TextNode);
                     }
                     
                     else {
@@ -150,7 +159,7 @@ function LoadFaxes(OnlyLoadOptions = {
                         TextNode.innerHTML = ` ${Word}`;
                         ContentLabel.appendChild(TextNode);
                     }
-                });       
+                }       
 
                 const StatusBar = document.createElement("div");
                 StatusBar.classList.add("StatusBar");
@@ -336,24 +345,33 @@ function LoadFaxes(OnlyLoadOptions = {
                     RepliesContainer.appendChild(NoRepliesMessage);
                 }
 
-                const RemoveButton = document.createElement("div");
-                RemoveButton.style.position = "absolute";
-                RemoveButton.style.right = "1.25%";
-                RemoveButton.style.fontSize = "2.5vh";
-                RemoveButton.style.backgroundColor = "rgba(200, 0, 0, 0.5)";
-                RemoveButton.style.borderRadius = "2.5em";
-                RemoveButton.style.paddingLeft = "1.5vh";
-                RemoveButton.style.paddingRight = "1.5vh";
-                RemoveButton.style.bottom = "8vh";
-                RemoveButton.innerHTML = "Remove";
-                FaxButton.appendChild(RemoveButton);
-
                 const IP = fax.GetUUID();
                 const UserDocRef = doc(UsersCollection, IP);
                 const DocSnapshot = await getDoc(UserDocRef);
                 const DocData = await DocSnapshot.data();
                 var IsAuthor = Author === DocData.username;
-                RemoveButton.style.visibility = IsAuthor ? "visible" : "hidden";
+
+                if (IsAuthor) {
+                    const DivisionB = document.createElement("division");
+                    StatusBar.appendChild(DivisionB);
+
+                    const RemoveButton = document.createElement("div");
+                    RemoveButton.classList.add("RemoveButton");
+                    RemoveButton.innerHTML = "Remove";
+                    StatusBar.appendChild(RemoveButton);
+
+                    RemoveButton.addEventListener("click", async () => {
+                        const QuerySnapshot = await getDocs(query(FaxesCollection, where("author", "==", Fax.author), where("title", "==", Fax.title)));
+                        
+                        QuerySnapshot.forEach(async (Doc) => {
+                            const FaxDocRef = doc(FaxesCollection, Doc.id);
+                            await deleteDoc(FaxDocRef);
+                        });
+                
+                        LoadFaxes();
+                    });                    
+                }
+
                 if (Array.from(Fax.likedBy).includes(DocData.username)) {
                     LikeButton.src = "../images/Liked.svg";
                     LikeButton.addEventListener("mouseleave", function() {
@@ -387,13 +405,9 @@ function LoadFaxes(OnlyLoadOptions = {
                         LikeButton.src = "../images/NotLiked.svg"
                     }
                 });
-                RemoveButton.addEventListener("click", async () => {
-                    await deleteDoc(doc(Db, "faxes", Fax.id));
-                    LoadFaxes();
-                });
 
                 FaxButton.addEventListener("click", async function(Event) {
-                    if (Event.target === LikeButton || Event.target === RemoveButton || Event.target === LikeCountLabel || Event.target === ReplyContainer || Event.target.tagName.toLowerCase() === "input" || Event.target.tagName.toLowerCase() === "button") return;
+                    if (Event.target === LikeButton || Event.target === LikeCountLabel || Event.target === ReplyContainer || Event.target === ContentLabel || Event.target.tagName.toLowerCase() === "input" || Event.target.tagName.toLowerCase() === "button") return;
                     
                     ContentLabel.style.visibility = getComputedStyle(ContentLabel).visibility === "visible" ? "hidden" : "visible";
                     ReplyContainer.style.visibility = getComputedStyle(ContentLabel).visibility !== "visible" ? "hidden" : "visible";
@@ -446,8 +460,6 @@ function Filter() {
         });
     }
 }
-
-
 
 FaxSubmitButton.addEventListener("click", async () => {
     const IP = fax.GetUUID();
