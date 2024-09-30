@@ -320,7 +320,6 @@ function LoadFaxes(OnlyLoadOptions = {
 
                         const ReplyAuthor = document.createElement("div");
                         ReplyAuthor.innerHTML = `@${Reply.author} -`;
-                        ReplyAuthor.setAttribute("link", "true");
                         ReplyContainer.appendChild(ReplyAuthor);
 
                         const ReplyMessage = document.createElement("div");
