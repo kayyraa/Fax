@@ -147,10 +147,12 @@ function LoadFaxes(OnlyLoadOptions = {
                         TextNode.innerHTML = ` ${Word.replace("<pre>", "").replace("</pre>", "")}`;
                         ContentLabel.appendChild(TextNode);
                     } else if (Word.startsWith("https://")) {
-                        const TextNode = document.createElement("pre");
+                        const GetDomain = (Url) => new URL(Url).hostname;
+
+                        const TextNode = document.createElement("span");
                         TextNode.setAttribute("hreflink", "true");
-                        TextNode.innerHTML = Index !== 0 ? ` ${Word}` : Word;
-                        TextNode.onclick = () => window.location.href = Word;
+                        TextNode.innerHTML = Index !== 0 ? ` https://${GetDomain(Word)}` : `https://${GetDomain(Word)}`;
+                        TextNode.onclick = () => window.open(Word);
                         ContentLabel.appendChild(TextNode);
                     }
                     
@@ -168,9 +170,6 @@ function LoadFaxes(OnlyLoadOptions = {
                 const ViewCountLabel = document.createElement("span");
                 ViewCountLabel.innerHTML = `${Fax.views} View${parseInt(Fax.views) > 1 ? "s" : ""}`;
                 StatusBar.appendChild(ViewCountLabel);
-
-                const Division = document.createElement("division");
-                StatusBar.appendChild(Division);
 
                 const LikeCountLabel = document.createElement("span");
                 LikeCountLabel.innerHTML = `${Fax.likes} Like${parseInt(Fax.likes) > 1 ? "s" : ""}`;
@@ -233,23 +232,17 @@ function LoadFaxes(OnlyLoadOptions = {
                 };
                 StatusBar.appendChild(LikeCountLabel);
 
-                const DivisionA = document.createElement("division");
-                StatusBar.appendChild(DivisionA);
-
                 const ReplyCountLabel = document.createElement("span");
                 ReplyCountLabel.innerHTML = `${Fax.replies.length} ${Fax.replies.length > 1 ? "Replies" : "Reply"}`;
                 StatusBar.appendChild(ReplyCountLabel);
-                
-                const Division2 = document.createElement("division");
-                StatusBar.appendChild(Division2);
+
+                const TimestampLabel = document.createElement("span");
+                StatusBar.appendChild(TimestampLabel);
 
                 const LikeButton = document.createElement("img");
                 LikeButton.src = "../images/NotLiked.svg";
                 LikeButton.style.height = "3vh";
                 StatusBar.appendChild(LikeButton);
-
-                const Division3 = document.createElement("division");
-                StatusBar.appendChild(Division3);
 
                 const TimeAgo = (t1, t2, x) => {
                     let diff = t2 - t1;
@@ -267,11 +260,9 @@ function LoadFaxes(OnlyLoadOptions = {
                     } else {
                         return diff;
                     }
-                };                             
+                };
 
-                const TimestampLabel = document.createElement("span");
                 TimestampLabel.innerHTML = TimeAgo(Fax.timestamp, Math.floor(Date.now() / 1000), true);
-                StatusBar.appendChild(TimestampLabel);
 
                 FaxButton.style.order = TimeAgo(Fax.timestamp, Math.floor(Date.now() / 1000), false);
 
@@ -352,9 +343,6 @@ function LoadFaxes(OnlyLoadOptions = {
                 var IsAuthor = Author === DocData.username;
 
                 if (IsAuthor) {
-                    const DivisionB = document.createElement("division");
-                    StatusBar.appendChild(DivisionB);
-
                     const RemoveButton = document.createElement("div");
                     RemoveButton.classList.add("RemoveButton");
                     RemoveButton.innerHTML = "Remove";
@@ -362,7 +350,7 @@ function LoadFaxes(OnlyLoadOptions = {
 
                     RemoveButton.addEventListener("click", async () => {
                         const QuerySnapshot = await getDocs(query(FaxesCollection, where("author", "==", Fax.author), where("title", "==", Fax.title)));
-                        
+
                         QuerySnapshot.forEach(async (Doc) => {
                             const FaxDocRef = doc(FaxesCollection, Doc.id);
                             await deleteDoc(FaxDocRef);

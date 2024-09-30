@@ -48,15 +48,6 @@ a:hover {
     color: #89a3da;
 }
 
-division {
-    margin-left: 2%;
-    margin-right: 2%;
-}
-
-division::before {
-    content: "-";
-}
-
 .FaxesContainer {
     display: flex;
     flex-direction: column;
@@ -99,14 +90,9 @@ division::before {
     cursor: pointer;
 }
 
-.FaxButton span {
-    text-align: center;
-    font-size: 1.4vh;
-}
-
 .FaxButton sub {
     margin-left: 1%;
-    font-size: 2vh;
+    font-size: 1.4vh;
 }
 
 .FaxButton input {
@@ -198,6 +184,8 @@ division::before {
     display: flex;
     flex-direction: row;
 
+    gap: 4vh;
+
     position: absolute;
     bottom: 0;
     width: 100%;
@@ -211,10 +199,12 @@ division::before {
 }
 
 .StatusBar span {
+    text-align: center;
     border-radius: 2.5em;
+    font-size: 1.4vh;
     background-color: rgba(0, 0, 0, 0.5);
-    padding-left: 1.5vh;
-    padding-right: 1.5vh;
+    padding-left: 1vh;
+    padding-right: 1vh;
 }
 
 .Topbar {
@@ -306,6 +296,10 @@ division::before {
 
 .RemoveButton:hover {
     background-color: rgba(200, 0, 0, 0.75);
+}
+
+#FaxCreateButton {
+    height: 32vh;
 }
 
 #FaxCreateButton input {
