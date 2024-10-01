@@ -335,7 +335,7 @@ PageOptions = {
                 RepliesContainer.appendChild(RepliesHeader);
 
                 if (Fax.replies.length > 0) {
-                    Fax.replies.forEach(Reply => {
+                    Fax.replies.forEach(async Reply => {
                         const ReplyContainer = document.createElement("div");
                         ReplyContainer.style.order = TimeAgo(Reply.timestamp, Math.floor(Date.now() / 1000), false);
                         RepliesContainer.appendChild(ReplyContainer);
@@ -349,8 +349,43 @@ PageOptions = {
                         ReplyContainer.appendChild(ReplyMessage);
 
                         const ReplyTimestamp = document.createElement("div");
-                        ReplyTimestamp.innerHTML = TimeAgo(Reply.timestamp, Math.floor(Date.now() / 1000), true);
+                        ReplyTimestamp.innerHTML = `${TimeAgo(Reply.timestamp, Math.floor(Date.now() / 1000), true)} -`;
                         ReplyContainer.appendChild(ReplyTimestamp);
+
+                        const IP = fax.GetUUID();
+                        const UserDocRef = doc(UsersCollection, IP);
+                        const DocSnapshot = await getDoc(UserDocRef);
+                        const DocData = await DocSnapshot.data();
+
+                        if (String(Reply.author).toLowerCase() === DocData.username) {
+                            const RemoveReplyButton = document.createElement("div");
+                            RemoveReplyButton.innerHTML = "Remove Reply";
+                            RemoveReplyButton.classList.add("RemoveReplyButton");
+                            ReplyContainer.appendChild(RemoveReplyButton);
+
+                            RemoveReplyButton.addEventListener("click", async () => {
+                                const FaxDocRef = doc(FaxesCollection, Fax.id);
+                                const FaxDocSnapshot = await getDoc(FaxDocRef);
+
+                                if (FaxDocSnapshot.exists()) {
+                                    var CurrentReplies = FaxDocSnapshot.data().replies;
+                                    CurrentReplies = [
+                                        ...CurrentReplies.filter(
+                                            (Element) =>
+                                                Element.author !== Reply.author ||
+                                                Element.message !== Reply.message ||
+                                                Element.timestamp !== Reply.timestamp
+                                        )
+                                    ];
+                                
+                                    await updateDoc(FaxDocRef, {
+                                        replies: CurrentReplies
+                                    });
+
+                                    LoadFaxes();
+                                }
+                            });
+                        }
                     });
                 } else {
                     const NoRepliesMessage = document.createElement("div");
