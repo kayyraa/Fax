@@ -36,6 +36,9 @@ function LoadFaxes(OnlyLoadOptions = {
     OnlyLoadWithHigherLikesThan: 0,
     OnlyLoadWithLowerViewsThan: 0,
     OnlyLoadWithLowerLikesThan: 0,
+},
+PageOptions = {
+    Scroll: 0
 }) {
     var Results = 0;
     Array.from(FaxesContainer.getElementsByTagName("div")).forEach(Fax => {
@@ -49,6 +52,10 @@ function LoadFaxes(OnlyLoadOptions = {
         const Faxes = await Snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         if (Faxes.length > 0) {
             Faxes.forEach(async Fax => {
+                if (PageOptions.Scroll) {
+                    FaxesContainer.scrollTop = PageOptions.Scroll;
+                }
+
                 if (OnlyLoadOptions.OnlyLoadWithThisAuthor) {
                     if (String(Fax.author).toLowerCase() !== OnlyLoadOptions.OnlyLoadWithThisAuthor.toLowerCase().replace("@", "")) {
                         return;
@@ -119,6 +126,19 @@ function LoadFaxes(OnlyLoadOptions = {
                 TitleLabel.appendChild(CreatorLabel);
 
                 const Words = Content.split(" ");
+
+                const TitleEditInput = document.createElement("input");
+                TitleEditInput.style.display = "none";
+                FaxButton.appendChild(TitleEditInput);
+
+                const ContentEditInput = document.createElement("input");
+                ContentEditInput.style.display = "none";
+                FaxButton.appendChild(ContentEditInput);
+
+                const ConfirmEditButton = document.createElement("button");
+                ConfirmEditButton.style.display = "none";
+                ConfirmEditButton.innerHTML = "Confirm Changes";
+                FaxButton.appendChild(ConfirmEditButton);
 
                 const ContentLabel = document.createElement("p");
                 FaxButton.appendChild(ContentLabel);
@@ -345,10 +365,49 @@ function LoadFaxes(OnlyLoadOptions = {
                 var IsAuthor = Author === DocData.username;
 
                 if (IsAuthor) {
+                    const EditButton = document.createElement("div");
+                    EditButton.classList.add("EditButton");
+                    EditButton.innerHTML = "Edit";
+                    StatusBar.appendChild(EditButton);
+
                     const RemoveButton = document.createElement("div");
                     RemoveButton.classList.add("RemoveButton");
                     RemoveButton.innerHTML = "Remove";
                     StatusBar.appendChild(RemoveButton);
+
+                    EditButton.addEventListener("click", () => {
+                        ContentLabel.style.display = "none";
+                        TitleLabel.style.display = "none";
+                        
+                        ContentEditInput.style.display = "";
+                        ContentEditInput.value = Content;
+
+                        TitleEditInput.style.display = "";
+                        TitleEditInput.value = Title;
+
+                        ConfirmEditButton.style.display = "";
+
+                        ConfirmEditButton.addEventListener("click", async () => {
+                            const QuerySnapshot = await getDocs(query(FaxesCollection, where("author", "==", Fax.author), where("title", "==", Fax.title)));
+
+                            QuerySnapshot.forEach(async (Doc) => {
+                                const FaxDocRef = doc(FaxesCollection, Doc.id);
+                                await updateDoc(FaxDocRef, {
+                                    title: TitleEditInput.value,
+                                    content: ContentEditInput.value
+                                });
+
+                                ContentEditInput.style.display = "none";
+                                TitleEditInput.style.display = "none";
+                                ConfirmEditButton.style.display = "none";
+
+                                ContentLabel.style.display = "";
+                                TitleLabel.style.display = "";
+                            });
+
+                            LoadFaxes(PageOptions = {Scroll: FaxButton.offsetTop});
+                        });
+                    });
 
                     RemoveButton.addEventListener("click", () => {
                         fax.MidCont({
@@ -406,7 +465,7 @@ function LoadFaxes(OnlyLoadOptions = {
                 });
 
                 FaxButton.addEventListener("click", async function(Event) {
-                    if (Event.target === LikeButton || Event.target === LikeCountLabel || Event.target === ReplyContainer || Event.target.tagName.toLowerCase() === "input" || Event.target.tagName.toLowerCase() === "button") return;
+                    if (Event.target.offsetParent === StatusBar || Event.target === LikeButton || Event.target === LikeCountLabel || Event.target === ReplyContainer || Event.target.tagName.toLowerCase() === "input" || Event.target.tagName.toLowerCase() === "button") return;
 
                     ContentLabel.style.visibility = getComputedStyle(ContentLabel).visibility === "visible" ? "hidden" : "visible";
                     ReplyContainer.style.visibility = getComputedStyle(ContentLabel).visibility !== "visible" ? "hidden" : "visible";
