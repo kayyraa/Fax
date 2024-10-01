@@ -15,6 +15,54 @@ const App = initializeApp(FirebaseConfig);
 const Db = getFirestore(App);
 const FaxesCollection = collection(Db, "faxes");
 
+const LinkHrefLabel = document.getElementById("LinkHrefLabel");
+const MessageBoxDiv = document.getElementById("MessageBox");
+const MsgHeader = document.getElementById('MsgHeader');
+const MsgContent = document.getElementById('MsgContent');
+const MsgAcceptButton = document.getElementById('MsgAcceptButton');
+const MsgRefuseButton = document.getElementById('MsgRefuseButton');
+
+export function MidCont(MessageBox = {Header: "", Content: "", Accept: "", Refuse: ""}, Accept = () => console.log("Accepted"), Refuse = () => console.log("Refused"), Visible = true) {
+    MsgHeader.innerHTML = MessageBox.Header;
+    MsgContent.innerHTML = MessageBox.Content;
+    MsgAcceptButton.innerHTML = MessageBox.Accept;
+    MsgRefuseButton.innerHTML = MessageBox.Refuse;
+    
+    if (!Visible) {
+        MessageBoxDiv.style.opacity = "0"
+
+        setTimeout(() => {
+            MessageBoxDiv.style.visibility = "hidden";
+        }, 250);
+    } else {
+        MsgAcceptButton.onclick = () => {
+            Accept();
+
+            MessageBoxDiv.style.opacity = "0"
+
+            setTimeout(() => {
+                MessageBoxDiv.style.visibility = "hidden";
+            }, 250);
+        };
+        MsgRefuseButton.onclick = () => {
+            Refuse();
+            MessageBoxDiv.style.opacity = "0"
+
+            setTimeout(() => {
+                MessageBoxDiv.style.visibility = "hidden";
+            }, 250);
+        };
+
+        MessageBoxDiv.style.visibility = "visible";
+        MessageBoxDiv.style.opacity = "1"
+    }
+}
+
+export function ShowLink(Link, Show) {
+    LinkHrefLabel.innerHTML = Link;
+    LinkHrefLabel.style.opacity = Show ? "1" : "0";
+}
+
 export async function CreateFax(Title, Content, Creator) {
     const FaxRef = await addDoc(FaxesCollection, {
         title: Title,

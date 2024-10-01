@@ -15,8 +15,17 @@
         <script type="module" src="https://www.gstatic.com/firebasejs/10.13.2/firebase-analytics.js"></script>
     </head>
     <body>
+        <div id="LinkHrefLabel">https://example.com</div>
+
+        <div id="MessageBox">
+            <header id="MsgHeader">Header</header>
+            <span id="MsgContent">Content</span>
+            <button id="MsgAcceptButton">Accept</button>
+            <button id="MsgRefuseButton">Refuse</button>
+        </div>
+
         <div id="Topbar" class="Topbar">
-            <img class="TopbarIcon" onclick="window.location.href = './index.html'" src="./images/Favicon.svg">
+            <span class="TopbarIcon" onclick="window.location.href = './index.html'">FAX</span>
             <span id="UsernameLabel">LOGGING IN</span>
         </div>
 

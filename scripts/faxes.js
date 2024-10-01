@@ -153,6 +153,8 @@ function LoadFaxes(OnlyLoadOptions = {
                         TextNode.setAttribute("hreflink", "true");
                         TextNode.innerHTML = Index !== 0 ? ` https://${GetDomain(Word)}` : `https://${GetDomain(Word)}`;
                         TextNode.onclick = () => window.open(Word);
+                        TextNode.onmouseenter = () => fax.ShowLink(Word, true);
+                        TextNode.onmouseleave = () => fax.ShowLink(Word, false);
                         ContentLabel.appendChild(TextNode);
                     }
                     
@@ -348,16 +350,25 @@ function LoadFaxes(OnlyLoadOptions = {
                     RemoveButton.innerHTML = "Remove";
                     StatusBar.appendChild(RemoveButton);
 
-                    RemoveButton.addEventListener("click", async () => {
-                        const QuerySnapshot = await getDocs(query(FaxesCollection, where("author", "==", Fax.author), where("title", "==", Fax.title)));
+                    RemoveButton.addEventListener("click", () => {
+                        fax.MidCont({
+                            Header: "Removing Post",
+                            Content: "Are you sure that you want to delete this post?",
+                            Accept: "Remove",
+                            Refuse: "No, take me back."
+                        }, async () => {
+                            const QuerySnapshot = await getDocs(query(FaxesCollection, where("author", "==", Fax.author), where("title", "==", Fax.title)));
 
-                        QuerySnapshot.forEach(async (Doc) => {
-                            const FaxDocRef = doc(FaxesCollection, Doc.id);
-                            await deleteDoc(FaxDocRef);
-                        });
-                
-                        LoadFaxes();
-                    });                    
+                            QuerySnapshot.forEach(async (Doc) => {
+                                const FaxDocRef = doc(FaxesCollection, Doc.id);
+                                await deleteDoc(FaxDocRef);
+                            });
+                    
+                            LoadFaxes();
+                        },
+                        () => {return;},
+                        true);
+                    });
                 }
 
                 if (Array.from(Fax.likedBy).includes(DocData.username)) {
@@ -395,8 +406,8 @@ function LoadFaxes(OnlyLoadOptions = {
                 });
 
                 FaxButton.addEventListener("click", async function(Event) {
-                    if (Event.target === LikeButton || Event.target === LikeCountLabel || Event.target === ReplyContainer || Event.target === ContentLabel || Event.target.tagName.toLowerCase() === "input" || Event.target.tagName.toLowerCase() === "button") return;
-                    
+                    if (Event.target === LikeButton || Event.target === LikeCountLabel || Event.target === ReplyContainer || Event.target.tagName.toLowerCase() === "input" || Event.target.tagName.toLowerCase() === "button") return;
+
                     ContentLabel.style.visibility = getComputedStyle(ContentLabel).visibility === "visible" ? "hidden" : "visible";
                     ReplyContainer.style.visibility = getComputedStyle(ContentLabel).visibility !== "visible" ? "hidden" : "visible";
                     this.style.zIndex = "1";
