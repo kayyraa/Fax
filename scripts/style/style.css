@@ -190,6 +190,7 @@
     background-color: rgb(40, 40, 40);
 
     font-size: 3.5vh;
+    text-wrap: nowrap;
 
     overflow-y: hidden;
     overflow-x: auto;

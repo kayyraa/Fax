@@ -20,7 +20,6 @@ const UsersCollection = fire.collection(Db, "users");
 const UsernameInput = document.getElementById("UsernameInput");
 const PasswordInput = document.getElementById("PasswordInput");
 const SubmitButton = document.getElementById("SubmitButton");
-
 const UsernameLabel = document.getElementById("UsernameLabel");
 
 async function CheckUserDoc() {
@@ -34,29 +33,45 @@ async function CheckUserDoc() {
             window.location.href = "../account.html";
             return;
         }
+    }
 
+    if (document.title === "Account") {
         SubmitButton.addEventListener("click", async () => {
             const Username = UsernameInput.value.trim();
             const Password = PasswordInput.value.trim();
-
-            if (!Username || !Password) {
-                return;
+    
+            if (DocSnapshot.exists()) {
+                const UserData = DocSnapshot.data()
+    
+                if (!Username || !Password) {
+                    return;
+                }
+    
+                if (PasswordInput.value === UserData.password) {
+                    window.location.href = "../index.html";
+                    window.username = UserData.username;
+                    window.userdata = UserData;
+                    
+                    if (UsernameLabel) {
+                        UsernameLabel.innerHTML = `@${window.username}`;
+                    }
+                }
+            } else {
+                await fire.setDoc(UserDocRef, {
+                    register: Math.floor(Date.now() / 1000),
+                    username: Username,
+                    password: Password,
+                    ip: IP
+                });
             }
-
-            await fire.setDoc(UserDocRef, {
-                register: Math.floor(Date.now() / 1000),
-                username: Username,
-                password: Password,
-                ip: IP
-            });
-
-            window.location.href = "../index.html";
         });
     } else {
-        const UserData = DocSnapshot.data();
-        window.username = UserData.username;
-        window.userdata = UserData;
-        UsernameLabel.innerHTML = `@${UserData.username}`;
+        if (UsernameLabel) {
+            const UserData = DocSnapshot.data()
+            window.username = UserData.username;
+            window.userdata = UserData;
+            UsernameLabel.innerHTML = `@${UserData.username}`;
+        }
     }
 }
 
