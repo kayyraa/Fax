@@ -197,6 +197,10 @@
     justify-content: center;
 }
 
+.StatusBar * {
+    text-wrap: nowrap;
+}
+
 .StatusBar span {
     text-wrap: nowrap;
     text-align: center;
