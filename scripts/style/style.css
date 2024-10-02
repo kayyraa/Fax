@@ -1,53 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap');
-
-body {
-    background-color: rgb(60, 60, 60);
-    color: white;
-    overflow: hidden;
-    font-family: "DM Mono", monospace;
-
-    user-select: none !important;
-    -moz-user-select: none !important;
-    -webkit-user-select: none !important;
-}
-
-button {
-    font-family: "DM Mono", monospace;
-    border: none;
-}
-
-input {
-    font-family: "DM Mono", monospace;
-}
-
-button:hover {
-    opacity: 0.8;
-    cursor: pointer;
-}
-
-input:hover {
-    opacity: 0.8;
-}
-
-*[link]:hover {
-    text-decoration: underline;
-    color: #89a3da;
-}
-
-*[hreflink] {
-    color: #7998dc;
-}
-
-*[hreflink]:hover {
-    text-decoration: underline;
-    color: #4174e3;
-}
-
-a:hover {
-    text-decoration: underline;
-    color: #89a3da;
-}
-
 .Topbar {
     display: flex;
     flex-direction: row;
@@ -82,7 +32,7 @@ a:hover {
 }
 
 .TopbarIcon:hover {
-    scale: 1.125;
+    transform: scale(1.25);
 }
 
 .FaxesContainer {
@@ -122,7 +72,9 @@ a:hover {
     flex-grow: 0;
     flex-shrink: 0;
 
-    overflow: visible;
+    max-height: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .FaxButton:hover {
@@ -163,12 +115,13 @@ a:hover {
 
 .ReplyContainer {
     width: 100%;
-    height: 100%;
+    height: 75vh;
     background-color: rgba(0, 0, 0, 0.25);
     text-align: center;
     visibility: hidden;
     overflow-x: hidden;
     overflow-y: auto;
+    z-index: -1;
 }
 
 .ReplyContainer > button {
@@ -237,6 +190,9 @@ a:hover {
 
     font-size: 3.5vh;
 
+    overflow-y: hidden;
+    overflow-x: auto;
+
     align-items: center;
     justify-content: center;
 }
@@ -289,29 +245,21 @@ a:hover {
     font-size: 100%;
 }
 
-.RemoveReplyButton {
-    font-size: 2vh;
+.RemoveBase {
+    background-image: url("../../images/Tape.svg");
+    background-size: cover;
+    background-repeat: repeat;
+    transition: all 0.25s ease;
+
     background-color: rgba(200, 0, 0, 0.5);
+    font-size: 2vh;
     border-radius: 1em;
     padding-left: 2vh;
     padding-right: 2vh;
-    transition: background-color 0.25s ease;
 }
 
-.RemoveReplyButton:hover {
-    background-color: rgba(200, 0, 0, 0.75);
-}
-
-.RemoveButton {
-    font-size: 2vh;
-    background-color: rgba(200, 0, 0, 0.5);
-    border-radius: 1em;
-    padding-left: 2vh;
-    padding-right: 2vh;
-    transition: background-color 0.25s ease;
-}
-
-.RemoveButton:hover {
+.RemoveBase:hover {
+    background-blend-mode: color-burn;
     background-color: rgba(200, 0, 0, 0.75);
 }
 
@@ -326,6 +274,26 @@ a:hover {
 
 .EditButton:hover {
     background-color: rgba(100, 100, 100, 0.75);
+}
+
+.ContentLabel {
+    height: 100%;
+
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+
+    gap: 2vh;
+
+    max-height: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.ContentLabel img, .ContentLabel video {
+    border: 2px solid white;
+    box-sizing: border-box;
+    border-radius: 1em;
 }
 
 #ResultsLabel {
@@ -463,7 +431,7 @@ a:hover {
     bottom: 0;
     padding-left: 1vh;
 
-    background-color: rgba(0, 0, 0, 0.25);
+    background-color: black;
 
     z-index: 1;
     align-content: center;
@@ -474,6 +442,13 @@ a:hover {
 
     opacity: 0;
     transition: opacity 0.5s ease-in-out;
+}
+
+#FaxContentInput {
+    text-align: center;
+    align-content: center;
+    height: 12vh;
+    resize: none;
 }
 
 #MessageBox {

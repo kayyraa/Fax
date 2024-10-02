@@ -4,6 +4,7 @@
         <title>Fax Paged</title>
 
         <link rel="stylesheet" href="scripts/style/style.css">
+        <link rel="stylesheet" href="scripts/style/format.css">
         <link rel="shortcut icon" href="images/Favicon.svg" type="image/x-icon">
 
         <script type="module" src="scripts/profile.js"></script>
@@ -32,7 +33,7 @@
         <div class="FaxesContainer" id="FaxesContainer">
             <div id="FaxCreateButton" class="FaxButton">
                 <input id="FaxTitleInput" autocomplete="off" placeholder="Title..." type="text">
-                <input id="FaxContentInput" autocomplete="off" placeholder="Content..." type="text">
+                <textarea id="FaxContentInput" placeholder="Content..."></textarea>
                 <button id="FaxSubmitButton">Post</button>
                 <input id="FilterInput" autocomplete="off" placeholder="Word, To, Filter, likes: 4, views: 14, likes>: 4, views<: 14, author: me, ..." type="text">
                 <button id="FilterButton">Filter</button>
@@ -47,6 +48,7 @@
             <div id="ProfileViewsLabel">Loading</div>
             <div id="ProfilePostsLabel">Loading</div>
             <button id="ProfileRemoveAccountButton">Remove Account</button>
+            <button onclick="window.location.href = './account.html'">Log Out</button>
             <button onclick="window.location.href = './index.html'" id="ProfileBackButton">Back</button>
         </div>
 

@@ -27,7 +27,8 @@ const FilterButton = document.getElementById("FilterButton");
 const FilterInput = document.getElementById("FilterInput");
 const ResultsLabel = document.getElementById("ResultsLabel");
 
-function LoadFaxes(OnlyLoadOptions = {
+function LoadFaxes(
+OnlyLoadOptions = {
     OnlyLoadWithThisAuthor: "",
     OnlyLoadWithTheseWords: [],
     OnlyLoadWithThisLikes: 0,
@@ -39,6 +40,13 @@ function LoadFaxes(OnlyLoadOptions = {
 },
 PageOptions = {
     Scroll: 0
+},
+OnLoadOptions = {
+    HighlightFax: {
+        Title: "",
+        Author: "",
+        For: 250
+    }
 }) {
     var Results = 0;
     Array.from(FaxesContainer.getElementsByTagName("div")).forEach(Fax => {
@@ -141,7 +149,17 @@ PageOptions = {
                 FaxButton.appendChild(ConfirmEditButton);
 
                 const ContentLabel = document.createElement("p");
+                ContentLabel.classList.add("ContentLabel");
                 FaxButton.appendChild(ContentLabel);
+
+                if (OnLoadOptions.HighlightFax && OnLoadOptions.HighlightFax.Title && OnLoadOptions.HighlightFax.Author) {
+                    if (String(Title).toLowerCase() === String(OnLoadOptions.HighlightFax.Title).toLowerCase() && String(Author).toLowerCase() === String(OnLoadOptions.HighlightFax.Author).toLowerCase()) {
+                        FaxButton.style.backgroundColor = "rgb(80, 80, 80)";
+                        setTimeout(() => {
+                            FaxButton.style.backgroundColor = "";
+                        }, OnLoadOptions.HighlightFax.For || 250);
+                    }
+                }
 
                 for (let Index = 0; Index < Words.length; Index++) {
                     const Word = Words[Index];
@@ -175,6 +193,23 @@ PageOptions = {
                         TextNode.onclick = () => window.open(Word);
                         TextNode.onmouseenter = () => fax.ShowLink(Word, true);
                         TextNode.onmouseleave = () => fax.ShowLink(Word, false);
+                        ContentLabel.appendChild(TextNode);
+                    } else if (Word.startsWith("<img>") && Word.endsWith("</img>")) {
+                        const TextNode = document.createElement("img");
+                        TextNode.style.height = "100%";
+                        TextNode.src = Word.replace("<img>", "").replace("</img>", "");
+                        TextNode.onclick = () => window.open(Word.replace("<img>", "").replace("</img>", ""));
+                        TextNode.onmouseenter = () => fax.ShowLink(Word, true);
+                        TextNode.onmouseleave = () => fax.ShowLink(Word, false);
+                        ContentLabel.appendChild(TextNode);
+                    } else if (Word.startsWith("<video>") && Word.endsWith("</video>")) {
+                        const TextNode = document.createElement("video");
+                        TextNode.style.height = "100%";
+                        TextNode.src = Word.replace("<video>", "").replace("</video>", "");
+                        TextNode.onclick = () => window.open(Word.replace("<video>", "").replace("</video>", ""));
+                        TextNode.onmouseenter = () => fax.ShowLink(Word.replace("<video>", "").replace("</video>", ""), true);
+                        TextNode.onmouseleave = () => fax.ShowLink(Word.replace("<video>", "").replace("</video>", ""), false);
+                        TextNode.controls = true;
                         ContentLabel.appendChild(TextNode);
                     }
                     
@@ -261,17 +296,12 @@ PageOptions = {
                 const TimestampLabel = document.createElement("span");
                 StatusBar.appendChild(TimestampLabel);
 
-                const LikeButton = document.createElement("img");
-                LikeButton.src = "../images/NotLiked.svg";
-                LikeButton.style.height = "3vh";
-                StatusBar.appendChild(LikeButton);
-
                 const TimeAgo = (t1, t2, x) => {
                     let diff = t2 - t1;
                     let mins = 60, hrs = 3600, days = 86400, weeks = 604800, months = 2592000, years = 31536000;
                     
                     if (x) {
-                        return diff <= 40 ? "now" : 
+                        return diff < 60 ? "now" : 
                                diff < mins ? `${diff}s ago` : 
                                diff < hrs ? `${Math.floor(diff / mins)}m ago` : 
                                diff < days ? `${Math.floor(diff / hrs)}h ago` : 
@@ -283,6 +313,17 @@ PageOptions = {
                         return diff;
                     }
                 };
+
+                if (Fax.editted.editted) {
+                    const EditLabel = document.createElement("span");
+                    EditLabel.innerHTML = `Edited - ${TimeAgo(Fax.editted.timestamp, Math.floor(Date.now() / 1000), true)}`;
+                    StatusBar.appendChild(EditLabel);
+                }
+
+                const LikeButton = document.createElement("img");
+                LikeButton.src = "../images/NotLiked.svg";
+                LikeButton.style.height = "3vh";
+                StatusBar.appendChild(LikeButton);
 
                 TimestampLabel.innerHTML = TimeAgo(Fax.timestamp, Math.floor(Date.now() / 1000), true);
 
@@ -360,7 +401,7 @@ PageOptions = {
                         if (String(Reply.author).toLowerCase() === DocData.username) {
                             const RemoveReplyButton = document.createElement("div");
                             RemoveReplyButton.innerHTML = "Remove Reply";
-                            RemoveReplyButton.classList.add("RemoveReplyButton");
+                            RemoveReplyButton.classList.add("RemoveReplyButton", "RemoveBase");
                             ReplyContainer.appendChild(RemoveReplyButton);
 
                             RemoveReplyButton.addEventListener("click", async () => {
@@ -382,7 +423,16 @@ PageOptions = {
                                         replies: CurrentReplies
                                     });
 
-                                    LoadFaxes();
+                                    LoadFaxes(undefined, {
+                                        Scroll: FaxButton.offsetTop - FaxButton.offsetHeight,
+                                    },
+                                    {
+                                        HighlightFax: {
+                                            Title: Title,
+                                            Author: Author,
+                                            For: 250
+                                        }
+                                    });
                                 }
                             });
                         }
@@ -406,7 +456,7 @@ PageOptions = {
                     StatusBar.appendChild(EditButton);
 
                     const RemoveButton = document.createElement("div");
-                    RemoveButton.classList.add("RemoveButton");
+                    RemoveButton.classList.add("RemoveButton", "RemoveBase");
                     RemoveButton.innerHTML = "Remove";
                     StatusBar.appendChild(RemoveButton);
 
@@ -432,6 +482,13 @@ PageOptions = {
                                     content: ContentEditInput.value
                                 });
 
+                                updateDoc(FaxDocRef, {
+                                    editted: {
+                                        timestamp: Math.floor(Date.now() / 1000),
+                                        editted: true
+                                    }
+                                });
+
                                 ContentEditInput.style.display = "none";
                                 TitleEditInput.style.display = "none";
                                 ConfirmEditButton.style.display = "none";
@@ -440,7 +497,16 @@ PageOptions = {
                                 TitleLabel.style.display = "";
                             });
 
-                            LoadFaxes(PageOptions = {Scroll: FaxButton.offsetTop});
+                            LoadFaxes(undefined, {
+                                Scroll: FaxButton.offsetTop - FaxButton.offsetHeight,
+                            },
+                            {
+                                HighlightFax: {
+                                    Title: Title,
+                                    Author: Author,
+                                    For: 250
+                                }
+                            });
                         });
                     });
 
@@ -505,7 +571,7 @@ PageOptions = {
                     ContentLabel.style.visibility = getComputedStyle(ContentLabel).visibility === "visible" ? "hidden" : "visible";
                     ReplyContainer.style.visibility = getComputedStyle(ContentLabel).visibility !== "visible" ? "hidden" : "visible";
                     this.style.zIndex = "1";
-                    this.style.height = getComputedStyle(ContentLabel).visibility === "visible" ? "46vh" : "26vh";
+                    this.style.height = getComputedStyle(ContentLabel).visibility === "visible" ? "72vh" : "26vh";
 
                     await setDoc(doc(Db, "faxes", Fax.id), {
                         views: Fax.views + 1
