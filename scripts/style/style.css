@@ -94,6 +94,18 @@
     height: 35%;
 }
 
+.FaxButton textarea {
+    text-align: center;
+    width: 100%;
+    height: 35%;
+    background-color: white;
+    color: black;
+}
+
+.FaxButton textarea:hover {
+    opacity: 0.8;
+}
+
 .FaxButton button {
     text-align: center;
     width: 100%;
@@ -474,6 +486,8 @@
     align-content: center;
     height: 12vh;
     resize: none;
+    background-color: rgb(40, 40, 40);
+    color: white;
 }
 
 #MessageBox {

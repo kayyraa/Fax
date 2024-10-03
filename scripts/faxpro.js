@@ -72,6 +72,10 @@ export async function CreateFax(Title, Content, Creator) {
         likes: 0,
         likedBy: [],
         replies: [],
+        editted: {
+            editted: false,
+            timestamp: Math.floor(Date.now() / 1000)
+        },
         timestamp: Math.floor(Date.now() / 1000)
     });
     return FaxRef;

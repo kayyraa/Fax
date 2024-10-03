@@ -133,13 +133,11 @@ OnLoadOptions = {
                 CreatorLabel.innerHTML = `@${Author}`;
                 TitleLabel.appendChild(CreatorLabel);
 
-                const Words = Content.split(" ");
-
                 const TitleEditInput = document.createElement("input");
                 TitleEditInput.style.display = "none";
                 FaxButton.appendChild(TitleEditInput);
 
-                const ContentEditInput = document.createElement("input");
+                const ContentEditInput = document.createElement("textarea");
                 ContentEditInput.style.display = "none";
                 FaxButton.appendChild(ContentEditInput);
 
@@ -147,10 +145,6 @@ OnLoadOptions = {
                 ConfirmEditButton.style.display = "none";
                 ConfirmEditButton.innerHTML = "Confirm Changes";
                 FaxButton.appendChild(ConfirmEditButton);
-
-                const ContentLabel = document.createElement("p");
-                ContentLabel.classList.add("ContentLabel");
-                FaxButton.appendChild(ContentLabel);
 
                 if (OnLoadOptions.HighlightFax && OnLoadOptions.HighlightFax.Title && OnLoadOptions.HighlightFax.Author) {
                     if (String(Title).toLowerCase() === String(OnLoadOptions.HighlightFax.Title).toLowerCase() && String(Author).toLowerCase() === String(OnLoadOptions.HighlightFax.Author).toLowerCase()) {
@@ -161,64 +155,69 @@ OnLoadOptions = {
                     }
                 }
 
+                const ContentLabel = document.createElement("p");
+                ContentLabel.classList.add("ContentLabel");
+                FaxButton.appendChild(ContentLabel);
+                            
+                const Words = Content.split(" ");
+                            
                 for (let Index = 0; Index < Words.length; Index++) {
                     const Word = Words[Index];
-
-                    if (Word.startsWith("<i>") && Word.endsWith("</i>")) {
-                        const TextNode = document.createElement("i");
-                        TextNode.innerHTML = ` ${Word.replace("<i>", "").replace("</i>", "")}`;
-                        ContentLabel.appendChild(TextNode);
+                    
+                    let TextNode;
+                
+                    if (Word.startsWith("<code>") && Word.endsWith("</code>")) {
+                        TextNode = document.createElement("code");
+                        TextNode.innerHTML = InnerContent;
+                    } else if (Word.startsWith("<i>") && Word.endsWith("</i>")) {
+                        TextNode = document.createElement("i");
+                        TextNode.innerHTML = Word.replace(/<\/?i>/g, "").trim();
                     } else if (Word.startsWith("<b>") && Word.endsWith("</b>")) {
-                        const TextNode = document.createElement("b");
-                        TextNode.innerHTML = ` ${Word.replace("<b>", "").replace("</b>", "")}`;
-                        ContentLabel.appendChild(TextNode);
+                        TextNode = document.createElement("b");
+                        TextNode.innerHTML = Word.replace(/<\/?b>/g, "").trim();
                     } else if (Word.startsWith("<bq>") && Word.endsWith("</bq>")) {
-                        const TextNode = document.createElement("blockquote");
-                        TextNode.innerHTML = ` ${Word.replace("<bq>", "").replace("</bq>", "")}`;
-                        ContentLabel.appendChild(TextNode);
-                    } else if (Word.startsWith("<code>") && Word.endsWith("</code>")) {
-                        const TextNode = document.createElement("code");
-                        TextNode.innerHTML = ` ${Word.replace("<code>", "").replace("</code>", "")}`;
-                        ContentLabel.appendChild(TextNode);
+                        TextNode = document.createElement("blockquote");
+                        TextNode.innerHTML = Word.replace(/<\/?bq>/g, "").trim();
                     } else if (Word.startsWith("<pre>") && Word.endsWith("</pre>")) {
-                        const TextNode = document.createElement("pre");
-                        TextNode.innerHTML = ` ${Word.replace("<pre>", "").replace("</pre>", "")}`;
-                        ContentLabel.appendChild(TextNode);
+                        TextNode = document.createElement("pre");
+                        TextNode.innerHTML = Word.replace(/<\/?pre>/g, "").trim();
                     } else if (Word.startsWith("https://")) {
                         const GetDomain = (Url) => new URL(Url).hostname;
-
-                        const TextNode = document.createElement("span");
+                        TextNode = document.createElement("span");
                         TextNode.setAttribute("hreflink", "true");
                         TextNode.innerHTML = Index !== 0 ? ` https://${GetDomain(Word)}` : `https://${GetDomain(Word)}`;
                         TextNode.onclick = () => window.open(Word);
                         TextNode.onmouseenter = () => fax.ShowLink(Word, true);
                         TextNode.onmouseleave = () => fax.ShowLink(Word, false);
-                        ContentLabel.appendChild(TextNode);
                     } else if (Word.startsWith("<img>") && Word.endsWith("</img>")) {
-                        const TextNode = document.createElement("img");
+                        TextNode = document.createElement("img");
                         TextNode.style.height = "100%";
-                        TextNode.src = Word.replace("<img>", "").replace("</img>", "");
-                        TextNode.onclick = () => window.open(Word.replace("<img>", "").replace("</img>", ""));
-                        TextNode.onmouseenter = () => fax.ShowLink(Word, true);
-                        TextNode.onmouseleave = () => fax.ShowLink(Word, false);
-                        ContentLabel.appendChild(TextNode);
+                        TextNode.src = Word.replace("<img>", "").replace("</img>", "").trim();
+                        TextNode.onclick = () => window.open(TextNode.src);
+                        TextNode.onmouseenter = () => fax.ShowLink(TextNode.src, true);
+                        TextNode.onmouseleave = () => fax.ShowLink(TextNode.src, false);
                     } else if (Word.startsWith("<video>") && Word.endsWith("</video>")) {
-                        const TextNode = document.createElement("video");
+                        TextNode = document.createElement("video");
                         TextNode.style.height = "100%";
-                        TextNode.src = Word.replace("<video>", "").replace("</video>", "");
-                        TextNode.onclick = () => window.open(Word.replace("<video>", "").replace("</video>", ""));
-                        TextNode.onmouseenter = () => fax.ShowLink(Word.replace("<video>", "").replace("</video>", ""), true);
-                        TextNode.onmouseleave = () => fax.ShowLink(Word.replace("<video>", "").replace("</video>", ""), false);
+                        TextNode.src = Word.replace("<video>", "").replace("</video>", "").trim();
+                        TextNode.onclick = () => window.open(TextNode.src);
+                        TextNode.onmouseenter = () => fax.ShowLink(TextNode.src, true);
+                        TextNode.onmouseleave = () => fax.ShowLink(TextNode.src, false);
                         TextNode.controls = true;
-                        ContentLabel.appendChild(TextNode);
-                    }
-                    
-                    else {
-                        const TextNode = document.createElement("span");
+                    } else if (Word.startsWith("<embed>") && Word.endsWith("</embed>")) {
+                        TextNode = document.createElement("iframe");
+                        TextNode.style.height = "100%";
+                        TextNode.src = Word.replace("<embed>", "").replace("</embed>", "").trim();
+                        TextNode.onclick = () => window.open(TextNode.src);
+                        TextNode.onmouseenter = () => fax.ShowLink(TextNode.src, true);
+                        TextNode.onmouseleave = () => fax.ShowLink(TextNode.src, false);
+                    } else {
+                        TextNode = document.createElement("span");
                         TextNode.innerHTML = ` ${Word}`;
-                        ContentLabel.appendChild(TextNode);
                     }
-                }       
+                
+                    ContentLabel.appendChild(TextNode);
+                }
 
                 const StatusBar = document.createElement("div");
                 StatusBar.classList.add("StatusBar");
@@ -566,7 +565,7 @@ OnLoadOptions = {
                 });
 
                 FaxButton.addEventListener("click", async function(Event) {
-                    if (Event.target.offsetParent === StatusBar || Event.target === LikeButton || Event.target === LikeCountLabel || Event.target === ReplyContainer || Event.target.tagName.toLowerCase() === "input" || Event.target.tagName.toLowerCase() === "button") return;
+                    if (Event.target.offsetParent === StatusBar || Event.target === ContentEditInput || Event.target === LikeButton || Event.target === LikeCountLabel || Event.target === ReplyContainer || Event.target.tagName.toLowerCase() === "input" || Event.target.tagName.toLowerCase() === "button") return;
 
                     ContentLabel.style.visibility = getComputedStyle(ContentLabel).visibility === "visible" ? "hidden" : "visible";
                     ReplyContainer.style.visibility = getComputedStyle(ContentLabel).visibility !== "visible" ? "hidden" : "visible";
