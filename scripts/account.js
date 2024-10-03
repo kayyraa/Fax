@@ -23,6 +23,8 @@ const SubmitButton = document.getElementById("SubmitButton");
 const UsernameLabel = document.getElementById("UsernameLabel");
 
 async function CheckUserDoc() {
+    UsernameLabel.innerHTML = "@kayra";
+    return;
     const IP = fax.GetUUID();
 
     const UserDocRef = fire.doc(UsersCollection, IP);
