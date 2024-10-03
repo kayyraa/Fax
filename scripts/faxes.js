@@ -45,7 +45,8 @@ OnLoadOptions = {
     HighlightFax: {
         Title: "",
         Author: "",
-        For: 250
+        For: 250,
+        Click: false
     }
 }) {
     var Results = 0;
@@ -139,6 +140,8 @@ OnLoadOptions = {
 
                 const ContentEditInput = document.createElement("textarea");
                 ContentEditInput.style.display = "none";
+                ContentEditInput.style.height = "75vh";
+                ContentEditInput.style.alignContent = "center";
                 FaxButton.appendChild(ContentEditInput);
 
                 const ConfirmEditButton = document.createElement("button");
@@ -146,12 +149,22 @@ OnLoadOptions = {
                 ConfirmEditButton.innerHTML = "Confirm Changes";
                 FaxButton.appendChild(ConfirmEditButton);
 
+                const AbortEditButton = document.createElement("button");
+                AbortEditButton.style.display = "none";
+                AbortEditButton.innerHTML = "Abort Changes";
+                AbortEditButton.style.color = "red";
+                FaxButton.appendChild(AbortEditButton);
+
                 if (OnLoadOptions.HighlightFax && OnLoadOptions.HighlightFax.Title && OnLoadOptions.HighlightFax.Author) {
                     if (String(Title).toLowerCase() === String(OnLoadOptions.HighlightFax.Title).toLowerCase() && String(Author).toLowerCase() === String(OnLoadOptions.HighlightFax.Author).toLowerCase()) {
                         FaxButton.style.backgroundColor = "rgb(80, 80, 80)";
                         setTimeout(() => {
                             FaxButton.style.backgroundColor = "";
                         }, OnLoadOptions.HighlightFax.For || 250);
+
+                        if (OnLoadOptions.HighlightFax.Click) {
+                            FaxButton.click();
+                        }
                     }
                 }
 
@@ -211,6 +224,15 @@ OnLoadOptions = {
                         TextNode.onclick = () => window.open(TextNode.src);
                         TextNode.onmouseenter = () => fax.ShowLink(TextNode.src, true);
                         TextNode.onmouseleave = () => fax.ShowLink(TextNode.src, false);
+                        TextNode.referrerPolicy = "strict-origin-when-cross-origin";
+
+                        TextNode.onload = () => {
+                            try {
+                                console.log(`${String(TextNode.tagName).toLowerCase()}.load > ${TextNode.src}`);
+                            } catch (e) {
+                                console.warn(`${String(TextNode.tagName).toLowerCase()}.fail > ${TextNode.src}`)
+                            }
+                        };
                     } else {
                         TextNode = document.createElement("span");
                         TextNode.innerHTML = ` ${Word}`;
@@ -469,7 +491,18 @@ OnLoadOptions = {
                         TitleEditInput.style.display = "";
                         TitleEditInput.value = Title;
 
+                        AbortEditButton.style.display = "";
                         ConfirmEditButton.style.display = "";
+
+                        AbortEditButton.addEventListener("click", () => {
+                            ContentEditInput.style.display = "none";
+                            TitleEditInput.style.display = "none";
+                            ConfirmEditButton.style.display = "none";
+                            AbortEditButton.style.display = "none";
+
+                            ContentLabel.style.display = "";
+                            TitleLabel.style.display = "";
+                        });
 
                         ConfirmEditButton.addEventListener("click", async () => {
                             const QuerySnapshot = await getDocs(query(FaxesCollection, where("author", "==", Fax.author), where("title", "==", Fax.title)));
@@ -503,7 +536,8 @@ OnLoadOptions = {
                                 HighlightFax: {
                                     Title: Title,
                                     Author: Author,
-                                    For: 250
+                                    For: 250,
+                                    Click: true
                                 }
                             });
                         });
