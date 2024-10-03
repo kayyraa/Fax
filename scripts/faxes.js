@@ -384,6 +384,21 @@ OnLoadOptions = {
                         });
                     
                         ReplyInput.value = "";
+
+                        LoadFaxes(
+                            undefined,
+                            {
+                                Scroll: FaxButton.offsetTop - FaxButton.offsetHeight
+                            },
+                            {
+                                HighlightFax: {
+                                    Title: Title,
+                                    Author: Author,
+                                    For: 250,
+                                    Click: true
+                                }
+                            }
+                        );
                     }
                 }
                 ReplyContainer.appendChild(ReplyButton);
