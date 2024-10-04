@@ -61,7 +61,13 @@ async function CheckUserDoc() {
                     register: Math.floor(Date.now() / 1000),
                     username: Username,
                     password: Password,
-                    ip: IP
+                    pp: "",
+                    ip: IP,
+
+                    style: {
+                        backgroundColor: "rgb(70, 70, 70)",
+                        textColor: "rgb(255, 255, 255)"
+                    }
                 });
             }
         });
