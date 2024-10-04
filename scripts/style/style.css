@@ -25,23 +25,6 @@
     transition: all 0.25s ease;
 }
 
-.TopbarIcon {
-    left: 1.5%;
-    font-weight: 900;
-    position: absolute;
-    cursor: pointer;
-    transition: all 0.25s ease;
-
-    background-image: rgb(197,159,195);
-    background-image: -moz-linear-gradient(90deg, rgba(197,159,195,1) 0%, rgba(129,155,199,1) 100%);
-    background-image: -webkit-linear-gradient(90deg, rgba(197,159,195,1) 0%, rgba(129,155,199,1) 100%);
-    background-image: linear-gradient(90deg, rgba(197,159,195,1) 0%, rgba(129,155,199,1) 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#c59fc3",endColorstr="#819bc7",GradientType=1);
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
 .FaxesContainer {
     padding-top: 10vh;
     display: flex;
@@ -372,6 +355,7 @@
 }
 
 #UsernameLabel {
+    font-size: 3vh;
     transition: all 0.25s ease;
 }
 
@@ -427,6 +411,11 @@
     margin-top: 0.75vh;
     margin-bottom: 0.75vh;
     transition: all 0.25s ease;
+}
+
+.Profile input {
+    font-family: "DM Mono", monospace;
+    cursor: pointer;
 }
 
 .Profile button {

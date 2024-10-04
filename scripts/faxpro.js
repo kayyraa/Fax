@@ -11,6 +11,8 @@ const FirebaseConfig = {
     measurementId: "G-MGMVZSCFKY"
 };
 
+export const DebugMode = true;
+
 const App = initializeApp(FirebaseConfig);
 const Db = getFirestore(App);
 const FaxesCollection = collection(Db, "faxes");

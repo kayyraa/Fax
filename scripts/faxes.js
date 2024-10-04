@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
-import { getFirestore, collection, doc, setDoc, updateDoc, getDoc, getDocs, deleteDoc, query, where } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
+import { getFirestore, collection, doc, setDoc, updateDoc, getDoc, getDocs, deleteDoc, query, where, onSnapshot } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
 import * as fax from "./faxpro.js";
 
 const FirebaseConfig = {
@@ -50,6 +50,7 @@ OnLoadOptions = {
     }
 }) {
     var Results = 0;
+
     Array.from(FaxesContainer.getElementsByTagName("div")).forEach(Fax => {
         if (Fax !== FaxCreateButton) {
             Fax.remove();
@@ -61,6 +62,22 @@ OnLoadOptions = {
         const Faxes = await Snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         if (Faxes.length > 0) {
             Faxes.forEach(async Fax => {
+                const FaxDocRef = await doc(FaxesCollection, Fax.id);
+                const FaxDocSnapshot = await getDoc(FaxDocRef);
+   
+                if (fax.DebugMode) {
+                    console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+                    console.log(`fax.load.replies > ${Fax.replies}`);
+                    console.log(`fax.load.likes > ${Fax.likes}`);
+                    console.log(`fax.load.likedby > ${Fax.likedBy}`);
+                    console.log(`fax.load.editted > ${Fax.editted}`);
+                    console.log(`fax.load.author > ${Fax.author}`);
+                    console.log(`fax.load.title > ${Fax.title}`);
+                    console.log(`fax.load.content > ${Fax.content}`);
+                    console.log(`fax.load.timestamp > ${Fax.timestamp}`);
+                    console.log(Fax);
+                }
+
                 if (PageOptions.Scroll) {
                     FaxesContainer.scrollTop = PageOptions.Scroll;
                 }
@@ -115,8 +132,6 @@ OnLoadOptions = {
                         return;
                     }
                 }
-
-                Results++;
 
                 const Title = Fax.title;
                 const Content = Fax.content;
@@ -373,8 +388,8 @@ OnLoadOptions = {
                 ReplyButton.innerHTML = "Reply";
                 ReplyButton.onclick = async () => {
                     const ReplyValue = ReplyInput.value;
-                    const FaxDocRef = doc(FaxesCollection, Fax.id);
-                    const FaxDocSnapshot = await getDoc(FaxDocRef);
+
+                    if (!ReplyValue) return;
 
                     if (FaxDocSnapshot.exists()) {
                         const IP = fax.GetUUID();
@@ -645,9 +660,10 @@ OnLoadOptions = {
                         views: Fax.views + 1
                     }, { merge: true });
                 });
-            });
 
-            ResultsLabel.innerHTML = `${Results} Results`;
+                Results++;
+                ResultsLabel.innerHTML = `${Results} Results`;
+            });
         }
     })();
 }

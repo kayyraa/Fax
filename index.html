@@ -15,6 +15,7 @@
 
         <script type="module" src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js"></script>
         <script type="module" src="https://www.gstatic.com/firebasejs/10.13.2/firebase-analytics.js"></script>
+        <script type="module" src="https://www.gstatic.com/firebasejs/9.12.0/firebase-storage.js"></script>
     </head>
     <body>
         <div id="LinkHrefLabel">https://example.com</div>
@@ -27,7 +28,6 @@
         </div>
 
         <div id="Topbar" class="Topbar">
-            <span hreflink="true" href="https://fax-paged.vercel.app" class="TopbarIcon">FAX</span>
             <span id="UsernameLabel">LOGGING IN</span>
         </div>
 
@@ -38,7 +38,7 @@
                 <button id="FaxSubmitButton">Post</button>
                 <input id="FilterInput" autocomplete="off" placeholder="Word, To, Filter, likes: 4, views: 14, likes>: 4, views<: 14, author: me, ..." type="text">
                 <button id="FilterButton">Filter</button>
-                <span id="ResultsLabel">~ Results</span>
+                <span id="ResultsLabel">Loading Results</span>
             </div>
         </div>
 
@@ -48,6 +48,7 @@
                 <section>
                     <button id="ProfilePhotoSaveButton">Save Profile Photo</button>
                     <input id="ProfilePhotoInput" placeholder="https://profile.com/new.png" type="text">
+                    <input id="ProfileImageInput" type="file" accept="image/*">
                 </section>
             </div>
             <div id="ProfileUsernameLabel">Loading</div>

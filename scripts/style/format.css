@@ -12,6 +12,11 @@ body {
     -webkit-user-select: none !important;
 }
 
+button:disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
 button {
     font-family: "DM Mono", monospace;
     border: none;

@@ -1,4 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-storage.js";
 import { getFirestore, collection, getDocs, getDoc, deleteDoc, updateDoc, doc } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
 import * as fax from "./faxpro.js";
 
@@ -14,6 +15,7 @@ const FirebaseConfig = {
 
 const App = initializeApp(FirebaseConfig);
 const Db = getFirestore(App);
+const Storage = getStorage(App);
 
 const FaxesCollection = collection(Db, "faxes");
 const UsersCollection = collection(Db, "users");
@@ -30,6 +32,7 @@ const ProfileTimestampLabel = document.getElementById("ProfileTimestampLabel");
 const ProfileImageLabel = document.getElementById("ProfileImageLabel");
 
 const ProfilePhotoInput = document.getElementById("ProfilePhotoInput");
+const ProfileImageInput = document.getElementById("ProfileImageInput");
 
 const ProfilePhotoSaveButton = document.getElementById("ProfilePhotoSaveButton");
 const ProfileRemoveAccountButton = document.getElementById("ProfileRemoveAccountButton");
@@ -93,12 +96,33 @@ ProfileRemoveAccountButton.addEventListener("click", async () => {
 
 ProfilePhotoSaveButton.addEventListener("click", async () => {
     const ProfilePhotoAddress = ProfilePhotoInput.value;
+    const ProfilePhotoImage = ProfileImageInput;
 
-    const IP = fax.GetUUID();
-    const UserDocRef = doc(UsersCollection, IP);
-    await updateDoc(UserDocRef, {
-        pp: ProfilePhotoAddress
-    });
+    if (!ProfilePhotoImage.files[0] && ProfilePhotoAddress) {
+        const IP = fax.GetUUID();
+        const UserDocRef = doc(UsersCollection, IP);
+        await updateDoc(UserDocRef, {
+            pp: ProfilePhotoAddress
+        });
 
-    location.reload();
+        location.reload();
+    } else if (ProfilePhotoImage.files[0] && !ProfilePhotoAddress) {
+        const File = ProfilePhotoImage.files[0];
+
+        const StorageRef = ref(Storage, `uploads/${File.name}`);
+
+        ProfilePhotoSaveButton.innerHTML = "Uploading Image";
+        ProfilePhotoSaveButton.disabled = true;
+        await uploadBytes(StorageRef, File).then(async (Snapshot) => {
+            const URL = await getDownloadURL(StorageRef);
+            const UserDocRef = doc(UsersCollection, fax.GetUUID());
+            await updateDoc(UserDocRef, {
+                pp: URL
+            });
+        }).catch((Error) => {
+            console.error('Upload failed:', Error);
+        });
+
+        location.reload();
+    }
 });
