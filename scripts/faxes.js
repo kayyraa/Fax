@@ -126,13 +126,23 @@ OnLoadOptions = {
                 FaxButton.classList.add("FaxButton");
                 FaxesContainer.appendChild(FaxButton);
 
+                const ProfileContainer = document.createElement("div");
+                ProfileContainer.classList.add("ProfileContainer");
+                FaxButton.appendChild(ProfileContainer);
+
+                const ProfilePhoto = document.createElement("img");
+                ProfilePhoto.classList.add("FaxButtonProfilePhoto");
+                ProfilePhoto.src = "../images/DefaultUser.svg";
+                ProfileContainer.appendChild(ProfilePhoto); 
+
+                const CreatorLabel = document.createElement("span");
+                CreatorLabel.innerHTML = `@${Author}`;
+                CreatorLabel.classList.add("FaxButtonCreatorLabel");
+                ProfileContainer.appendChild(CreatorLabel);
+
                 const TitleLabel = document.createElement("h1");
                 TitleLabel.innerHTML = Title;
                 FaxButton.appendChild(TitleLabel);
-
-                const CreatorLabel = document.createElement("sub");
-                CreatorLabel.innerHTML = `@${Author}`;
-                TitleLabel.appendChild(CreatorLabel);
 
                 const TitleEditInput = document.createElement("input");
                 TitleEditInput.style.display = "none";
@@ -484,6 +494,16 @@ OnLoadOptions = {
                 const DocSnapshot = await getDoc(UserDocRef);
                 const DocData = await DocSnapshot.data();
                 var IsAuthor = Author === DocData.username;
+
+                const AuthorDocQuery = query(UsersCollection, where("username", '==', Author));
+                const QuerySnapshot = await getDocs(AuthorDocQuery);
+                QuerySnapshot.forEach(async (Doc) => {
+                    const Data = await Doc.data();
+                    const ProfilePhotoURL = String(Data.pp).trim();
+                    if (ProfilePhotoURL !== "") {
+                        ProfilePhoto.src = ProfilePhotoURL;
+                    }
+                });
 
                 if (IsAuthor) {
                     const EditButton = document.createElement("div");

@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
-import { getFirestore, collection, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
+import { getFirestore, collection, getDocs, getDoc, deleteDoc, updateDoc, doc } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
 import * as fax from "./faxpro.js";
 
 const FirebaseConfig = {
@@ -27,6 +27,11 @@ const ProfileLikesLabel = document.getElementById("ProfileLikesLabel");
 const ProfileViewsLabel = document.getElementById("ProfileViewsLabel");
 const ProfilePostsLabel = document.getElementById("ProfilePostsLabel");
 const ProfileTimestampLabel = document.getElementById("ProfileTimestampLabel");
+const ProfileImageLabel = document.getElementById("ProfileImageLabel");
+
+const ProfilePhotoInput = document.getElementById("ProfilePhotoInput");
+
+const ProfilePhotoSaveButton = document.getElementById("ProfilePhotoSaveButton");
 const ProfileRemoveAccountButton = document.getElementById("ProfileRemoveAccountButton");
 
 var Toggle = false;
@@ -64,6 +69,14 @@ UsernameLabel.addEventListener("click", async () => {
             }
         });
 
+        const IP = fax.GetUUID();
+        const UserDocRef = doc(UsersCollection, IP);
+        const UserSnapshot = await getDoc(UserDocRef);
+        const ProfileImageAddress = UserSnapshot.data();
+        if (ProfileImageAddress.pp !== "") {
+            ProfileImageLabel.src = ProfileImageAddress.pp;
+        }
+
         ProfilePostsLabel.innerHTML = `${UserFaxes} Post${UserFaxes > 1 ? "s" : ""}`;
         ProfileLikesLabel.innerHTML = `${UserLikes} Like${UserLikes > 1 ? "s" : ""}`;
         ProfileViewsLabel.innerHTML = `${UserViews} View${UserViews > 1 ? "s" : ""}`;
@@ -76,4 +89,16 @@ ProfileRemoveAccountButton.addEventListener("click", async () => {
     const UserDocRef = doc(UsersCollection, IP);
     await deleteDoc(UserDocRef);
     window.location.reload();
+});
+
+ProfilePhotoSaveButton.addEventListener("click", async () => {
+    const ProfilePhotoAddress = ProfilePhotoInput.value;
+
+    const IP = fax.GetUUID();
+    const UserDocRef = doc(UsersCollection, IP);
+    await updateDoc(UserDocRef, {
+        pp: ProfilePhotoAddress
+    });
+
+    location.reload();
 });

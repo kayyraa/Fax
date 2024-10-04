@@ -41,16 +41,16 @@ async function CheckUserDoc() {
             const Password = PasswordInput.value.trim();
     
             if (DocSnapshot.exists()) {
-                const UserData = DocSnapshot.data()
-    
                 if (!Username || !Password) {
                     return;
                 }
     
-                if (PasswordInput.value === UserData.password) {
+                const UserData = DocSnapshot.data()
+                if (String(PasswordInput.value) === String(UserData.password)) {
                     window.location.href = "../index.html";
                     window.username = UserData.username;
                     window.userdata = UserData;
+                    window.pp = UserData.pp;
                     
                     if (UsernameLabel) {
                         UsernameLabel.innerHTML = `@${window.username}`;

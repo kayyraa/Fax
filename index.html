@@ -43,6 +43,13 @@
         </div>
 
         <div class="Profile" id="Profile">
+            <div>
+                <img draggable="false" id="ProfileImageLabel" src="./images/DefaultUser.svg">
+                <section>
+                    <button id="ProfilePhotoSaveButton">Save Profile Photo</button>
+                    <input id="ProfilePhotoInput" placeholder="https://profile.com/new.png" type="text">
+                </section>
+            </div>
             <div id="ProfileUsernameLabel">Loading</div>
             <div id="ProfileTimestampLabel">Loading</div>
             <div id="ProfileLikesLabel">Loading</div>
@@ -50,7 +57,7 @@
             <div id="ProfilePostsLabel">Loading</div>
             <button id="ProfileRemoveAccountButton">Remove Account</button>
             <button onclick="window.location.href = './account.html'">Log Out</button>
-            <button onclick="window.location.href = './index.html'" id="ProfileBackButton">Back</button>
+            <button onclick="location.reload()" id="ProfileBackButton">Back</button>
         </div>
 
         <div id="LikedByContainer" class="LikedByContainer">

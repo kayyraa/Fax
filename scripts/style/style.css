@@ -380,9 +380,32 @@
     cursor: pointer;
 }
 
+.ProfileContainer {
+    display: flex;
+    flex-direction: row;
+}
+
+.FaxButtonProfilePhoto {
+    width: 5vh;
+    margin-left: 2vh;
+    margin-top: 2vh;
+    aspect-ratio: 1 / 1;
+    border-radius: 100%;
+    border: 1px solid white;
+}
+
+.FaxButtonCreatorLabel {
+    font-size: 3vh;
+    margin-left: 1vh;
+    margin-top: 2.5vh;
+}
+
 .Profile {
     display: flex;
     flex-direction: column;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
 
     position: absolute;
     left: 50%;
@@ -401,12 +424,56 @@
 }
 
 .Profile * {
-    margin-left: 5vh;
-    margin-top: 1.25vh;
+    margin-top: 0.75vh;
+    margin-bottom: 0.75vh;
+    transition: all 0.25s ease;
 }
 
 .Profile button {
-    width: 42.5vh;
+    min-width: 50%;
+}
+
+.Profile > div > img {
+    width: 14vh;
+    border-radius: 100%;
+    aspect-ratio: 1 / 1;
+}
+
+.Profile > div > section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.Profile > div > section > input {
+    width: 100%;
+    text-align: center;
+    font-size: 2.5vh;
+    background-color: rgb(40, 40, 40);
+    color: white;
+    border: 0;
+    border-radius: 1em;
+}
+
+.Profile > div > section > * {
+    margin-left: 5vh;
+}
+
+.Profile > div > section > button {
+    width: 100%;
+}
+
+.Profile > div {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.Profile button {
+    flex-grow: 0;
+    flex-basis: auto;
+
+    width: auto;
     height: 6vh;
     font-size: 4vh;
     border-radius: 1em;
@@ -415,8 +482,6 @@
 
     padding-left: 3vh;
     padding-right: 3vh;
-
-    transition: all 0.25s ease;
 }
 
 .Profile button:hover {
