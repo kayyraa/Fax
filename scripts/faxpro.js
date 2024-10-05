@@ -11,6 +11,7 @@ const FirebaseConfig = {
     measurementId: "G-MGMVZSCFKY"
 };
 
+export const Announcements = false;
 export const DebugMode = false;
 export const AdminNames = [
     "kayra",

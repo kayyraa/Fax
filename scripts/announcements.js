@@ -1,5 +1,7 @@
 import * as fax from "./faxpro.js";
 
+if (!fax.Announcements) return;
+
 const Announcements = [
     {
         String: {
