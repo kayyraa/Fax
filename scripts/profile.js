@@ -31,28 +31,11 @@ const ProfilePostsLabel = document.getElementById("ProfilePostsLabel");
 const ProfileTimestampLabel = document.getElementById("ProfileTimestampLabel");
 const ProfileImageLabel = document.getElementById("ProfileImageLabel");
 
-const BackdropInput = document.getElementById("BackdropInput");
-const TextColorInput = document.getElementById("TextColorInput");
-
 const ProfilePhotoInput = document.getElementById("ProfilePhotoInput");
 const ProfileImageInput = document.getElementById("ProfileImageInput");
 
-const ProfileStyleSaveButton = document.getElementById("ProfileStyleSaveButton");
 const ProfilePhotoSaveButton = document.getElementById("ProfilePhotoSaveButton");
 const ProfileRemoveAccountButton = document.getElementById("ProfileRemoveAccountButton");
-
-function InvertColor(HexString) {
-    HexString = HexString.replace('#', '');
-
-    const R = parseInt(HexString.substring(0, 2), 16);
-    const G = parseInt(HexString.substring(2, 4), 16);
-    const B = parseInt(HexString.substring(4, 6), 16);
-
-    const Brightness = (R * 0.299 + G * 0.587 + B * 0.114);
-    const InvertedColor = Brightness >= 200 ? '#000000' : '#FFFFFF';
-    
-    return InvertedColor;
-}
 
 var Focus = {
     ProfileImage: false
@@ -97,27 +80,6 @@ UsernameLabel.addEventListener("click", async () => {
         const UserDocRef = doc(UsersCollection, IP);
         const UserSnapshot = await getDoc(UserDocRef);
         const UserData = await UserSnapshot.data();
-
-        const BackgroundColor = UserData.style.backgroundColor;
-        const TextColor = UserData.style.textColor;
-
-        ProfileContainer.style.backgroundColor = BackgroundColor;
-        ProfileContainer.style.color = TextColor;
-
-        BackdropInput.value = BackgroundColor;
-        TextColorInput.value = TextColor;
-        
-        ProfileImageLabel.style.borderColor = TextColor;
-
-        Array.from(ProfileContainer.querySelectorAll("button")).forEach(Element => {
-            Element.style.color = TextColor;
-            Element.onmouseenter = () => Element.style.color = InvertColor(TextColor);
-            Element.onmouseleave = () => Element.style.color = TextColor;
-        });
-
-        Array.from(ProfileContainer.querySelectorAll("input")).forEach(Element => {
-            Element.style.color = TextColor;;
-        });
 
         if (UserData.pp !== "") {
             ProfileImageLabel.src = UserData.pp;
@@ -177,20 +139,4 @@ ProfileImageLabel.addEventListener("click", () => {
     ProfileImageLabel.style.top = Focus.ProfileImage ? "50%" : "";
     ProfileImageLabel.style.transform = Focus.ProfileImage ? "translate(-50%, -50%)" : "";
     ProfileImageLabel.style.width = Focus.ProfileImage ? "25%" : "";
-});
-
-ProfileStyleSaveButton.addEventListener("click", async () => {
-    const BackgroundColor = BackdropInput.value;
-    const TextColor = TextColorInput.value;
-
-    const IP = fax.GetUUID();
-    const UserDocRef = doc(UsersCollection, IP);
-    await updateDoc(UserDocRef, {
-        style: {
-            backgroundColor: BackgroundColor,
-            textColor: TextColor
-        }
-    });
-
-    location.reload();
 });

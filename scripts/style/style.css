@@ -25,6 +25,26 @@
     transition: all 0.25s ease;
 }
 
+.Topbar * {
+    transition: all 0.25s ease;
+}
+
+.Topbar *:hover {
+    opacity: 0.5;
+}
+
+.Topbar > img {
+    position: absolute;
+    left: 2vh;
+    height: 75%;
+    cursor: pointer;
+}
+
+.Topbar > img:hover {
+    scale: 1.125;
+    opacity: 1;
+}
+
 .FaxesContainer {
     padding-top: 10vh;
     display: flex;
@@ -182,8 +202,6 @@
     display: flex;
     flex-direction: row;
 
-    gap: 0.5vh;
-
     position: absolute;
     bottom: 0;
     width: 100%;
@@ -204,15 +222,15 @@
     text-wrap: nowrap;
 }
 
-.StatusBar span {
+.StatusBar *:not(img) {
     text-wrap: nowrap;
     text-align: center;
     border-radius: 100em;
     font-size: 1.5vh;
     background-color: rgba(0, 0, 0, 0.5);
 
-    margin-left: 2vh;
-    margin-right: 2vh;
+    margin-left: 1vh;
+    margin-right: 1vh;
 
     padding-left: 2vh;
     padding-right: 2vh;
@@ -387,97 +405,81 @@
 .Profile {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    align-content: center;
     justify-content: center;
-
+    align-items: center;
     position: absolute;
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
-
     width: 90%;
     height: 100%;
     background-color: rgb(70, 70, 70);
-    border-left: 2px solid rgba(255, 255, 255, 0.25);
-    border-right: 2px solid rgba(255, 255, 255, 0.25);
-
+    border: 2px solid rgba(255, 255, 255, 0.25);
+    border-left-width: 2px;
+    border-right-width: 2px;
     visibility: hidden;
-
     font-size: 5vh;
 }
 
 .Profile * {
-    margin-top: 0.5vh;
-    margin-bottom: 0.75vh;
-    transition: all 0.25s ease;
+    margin: 0.5vh 0 0.75vh;
+    transition: 0.25s ease;
 }
 
 .Profile input {
     font-family: "DM Mono", monospace;
+    font-size: 2vh;
     cursor: pointer;
 }
 
-.Profile label {
-    text-align: center;
+.Profile label, 
+.Profile input[type="color"],
+.Profile div,
+.Profile div section,
+.Profile div section span {
     font-size: 2vh;
+    text-align: center;
 }
 
 .Profile input[type="color"] {
     border: 1px solid white;
-    border-radius: 0;
     background-color: transparent;
 }
 
 .Profile > div > img {
+    margin-right: 1vh;
+    z-index: 10;
     width: 14vh;
     border: 2px solid white;
-    border-radius: 100%;
+    border-radius: 50%;
     aspect-ratio: 1 / 1;
     cursor: pointer;
 }
 
-.Profile > div > section {
-    min-height: 26vh;
-    min-width: 48vh;
-    justify-content: center;
-
+.Profile section {
     display: flex;
     flex-direction: column;
+    justify-content: center;
     align-items: center;
-}
 
-.Profile > div > section > span {
     font-size: 2vh;
-    text-align: center;
-}
 
-.Profile > div {
-    font-size: 2vh;
-    text-align: center;
+    padding: 1vh 4vh;
+    border: 2px dashed rgba(255, 255, 255, 0.1);
+    border-radius: 2vh;
 }
 
 .Profile > div > section > input {
     width: 100%;
-    text-align: center;
     font-size: 2.5vh;
+    text-align: center;
     background-color: rgb(40, 40, 40);
     color: white;
-    border: 0;
+    border: none;
     border-radius: 1em;
 }
 
-.Profile > div > section {
-    border: 2px dashed rgba(255, 255, 255, 0.1);
-    border-radius: 2vh;
-    padding-right: 4vh;
-    padding-top: 1vh;
-    padding-bottom: 1vh;
-    margin-left: 1vh;
-}
-
 .Profile > div > section > * {
-    margin-left: 5vh;
     width: 100%;
     height: 4vh;
 }
@@ -489,25 +491,20 @@
 }
 
 .Profile button {
-    flex-grow: 0;
-    flex-basis: auto;
-
     width: auto;
     min-width: 50%;
     height: 6vh;
-    font-size: 2vh;
+    padding: 0 3vh;
+    font-size: 1.75vh;
     border-radius: 2em;
     background-color: black;
     color: white;
-
-    padding-left: 3vh;
-    padding-right: 3vh;
+    transition: background-color 0.25s ease;
 }
 
 .Profile button:hover {
     background-color: white;
     color: black;
-    opacity: 1;
 }
 
 .LikedByContainer {
