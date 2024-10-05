@@ -26,6 +26,7 @@ const FaxSubmitButton = document.getElementById("FaxSubmitButton");
 const FilterButton = document.getElementById("FilterButton");
 const FilterInput = document.getElementById("FilterInput");
 const ResultsLabel = document.getElementById("ResultsLabel");
+const AdminLabel = document.getElementById("AdminLabel");
 
 function LoadFaxes(
 OnlyLoadOptions = {
@@ -520,7 +521,13 @@ OnLoadOptions = {
                     }
                 });
 
-                if (IsAuthor) {
+                if (!fax.AdminNames.includes(DocData.username)) {
+                    if (AdminLabel) {
+                        AdminLabel.remove();
+                    }
+                }
+
+                if (IsAuthor || fax.AdminNames.includes(DocData.username)) {
                     const EditButton = document.createElement("div");
                     EditButton.classList.add("EditButton");
                     EditButton.innerHTML = "Edit";

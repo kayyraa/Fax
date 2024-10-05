@@ -12,6 +12,10 @@ const FirebaseConfig = {
 };
 
 export const DebugMode = true;
+export const AdminNames = [
+    "kayra",
+    "Lil Communist"
+];
 
 const App = initializeApp(FirebaseConfig);
 const Db = getFirestore(App);

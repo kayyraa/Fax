@@ -45,6 +45,10 @@
     opacity: 1;
 }
 
+.Topbar > span {
+    font-size: 3vh;
+}
+
 .FaxesContainer {
     padding-top: 10vh;
     display: flex;
@@ -373,13 +377,23 @@
 }
 
 #UsernameLabel {
-    font-size: 3vh;
     transition: all 0.25s ease;
 }
 
 #UsernameLabel:hover {
     opacity: 0.5;
     cursor: pointer;
+}
+
+#AdminLabel {
+    background: linear-gradient(22.5deg, rgb(157, 115, 0) 0%, rgb(255, 255, 0) 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+#AdminLabel:hover {
+    opacity: 1;
 }
 
 .ProfileContainer {
