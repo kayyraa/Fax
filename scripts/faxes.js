@@ -27,6 +27,8 @@ const FilterButton = document.getElementById("FilterButton");
 const FilterInput = document.getElementById("FilterInput");
 const ResultsLabel = document.getElementById("ResultsLabel");
 const AdminLabel = document.getElementById("AdminLabel");
+const Favicon = document.getElementById("Favicon");
+const TopbarIcon = document.getElementById("TopbarIcon");
 
 function LoadFaxes(
 OnlyLoadOptions = {
@@ -152,9 +154,15 @@ OnLoadOptions = {
                 ProfileContainer.appendChild(ProfilePhoto); 
 
                 const CreatorLabel = document.createElement("span");
-                CreatorLabel.innerHTML = `@${Author}`;
+                CreatorLabel.innerHTML = `@${Author} ${fax.AdminNames.includes(Author) ? "-" : ""}`;
                 CreatorLabel.classList.add("FaxButtonCreatorLabel");
                 ProfileContainer.appendChild(CreatorLabel);
+
+                const AdminLabel = document.createElement("span");
+                AdminLabel.innerHTML = `${fax.AdminNames.includes(Author) ? "Admin" : ""}`;
+                AdminLabel.classList.add("FaxButtonCreatorLabel");
+                AdminLabel.id = "AdminLabel";
+                ProfileContainer.appendChild(AdminLabel);
 
                 const TitleLabel = document.createElement("h1");
                 TitleLabel.innerHTML = Title;
@@ -526,6 +534,9 @@ OnLoadOptions = {
                     if (AdminLabel) {
                         AdminLabel.remove();
                     }
+                } else {
+                    Favicon.href = "../images/GoldenFavicon.svg";
+                    TopbarIcon.src = "../images/GoldenFavicon.svg";
                 }
 
                 if (IsAuthor || fax.AdminNames.includes(DocData.username)) {

@@ -62,7 +62,7 @@ UsernameLabel.addEventListener("click", async () => {
     if (JSON.parse(localStorage.getItem("USER"))) {
         Toggle = !Toggle;
 
-        ProfileUsernameLabel.textContent = `@${window.username}`;
+        ProfileUsernameLabel.textContent = `@${JSON.parse(localStorage.getItem("USER")).username}`;
         Topbar.style.top = Toggle ? "-10%" : "0";
         FaxesContainer.style.visibility = Toggle ? "hidden" : "visible";
         ProfileContainer.style.visibility = !Toggle ? "hidden" : "visible";
@@ -77,7 +77,6 @@ UsernameLabel.addEventListener("click", async () => {
         });
 
         const UserData = JSON.parse(localStorage.getItem("USER"));
-
         if (UserData.pp !== "") {
             ProfileImageLabel.src = UserData.pp;
         }
@@ -90,8 +89,7 @@ UsernameLabel.addEventListener("click", async () => {
 });
 
 ProfileRemoveAccountButton.addEventListener("click", async () => {
-    const IP = fax.GetUUID();
-    const UserDocRef = doc(UsersCollection, IP);
+    const UserDocRef = await query(UsersCollection, where("username", "==", JSON.parse(localStorage.getItem("USER")).username));
     await deleteDoc(UserDocRef);
     window.location.reload();
 });
