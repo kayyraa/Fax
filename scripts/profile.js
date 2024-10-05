@@ -59,7 +59,7 @@ UsernameLabel.addEventListener("click", async () => {
     UserLikes = 0;
     UserViews = 0;
 
-    if (window.username) {
+    if (JSON.parse(localStorage.getItem("USER"))) {
         Toggle = !Toggle;
 
         ProfileUsernameLabel.textContent = `@${window.username}`;
@@ -69,17 +69,14 @@ UsernameLabel.addEventListener("click", async () => {
 
         const Faxes = await getDocs(FaxesCollection);
         Faxes.forEach((Fax) => {
-            if (Fax.data().author === window.username) {
+            if (Fax.data().author === JSON.parse(localStorage.getItem("USER")).username) {
                 UserFaxes++;
                 UserLikes += Fax.data().likes;
                 UserViews += Fax.data().views;
             }
         });
 
-        const IP = fax.GetUUID();
-        const UserDocRef = doc(UsersCollection, IP);
-        const UserSnapshot = await getDoc(UserDocRef);
-        const UserData = await UserSnapshot.data();
+        const UserData = JSON.parse(localStorage.getItem("USER"));
 
         if (UserData.pp !== "") {
             ProfileImageLabel.src = UserData.pp;

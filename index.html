@@ -7,6 +7,7 @@
         <link rel="stylesheet" href="scripts/style/format.css">
         <link rel="shortcut icon" href="images/Favicon.svg" type="image/x-icon">
 
+        <script type="module" src="scripts/announcements.js"></script>
         <script type="module" src="scripts/hud.js"></script>
         <script type="module" src="scripts/profile.js"></script>
         <script type="module" src="scripts/account.js"></script>
@@ -23,8 +24,8 @@
         <div id="MessageBox">
             <header id="MsgHeader">Header</header>
             <span id="MsgContent">Content</span>
-            <button id="MsgAcceptButton">Accept</button>
-            <button id="MsgRefuseButton">Refuse</button>
+            <button color accept id="MsgAcceptButton">Accept</button>
+            <button color refuse id="MsgRefuseButton">Refuse</button>
         </div>
 
         <div id="Topbar" class="Topbar">
@@ -59,7 +60,7 @@
             <div id="ProfileViewsLabel">Loading</div>
             <div id="ProfilePostsLabel">Loading</div>
             <button id="ProfileRemoveAccountButton">Remove Account</button>
-            <button onclick="window.location.href = './account.html'">Log Out</button>
+            <button id="LogOutButton" onclick="window.location.href = './account.html'">Log Out</button>
             <button onclick="location.reload()" id="ProfileBackButton">Back</button>
         </div>
 

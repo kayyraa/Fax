@@ -492,7 +492,8 @@ OnLoadOptions = {
                                         HighlightFax: {
                                             Title: Title,
                                             Author: Author,
-                                            For: 250
+                                            For: 250,
+                                            Click: true
                                         }
                                     });
                                 }

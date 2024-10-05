@@ -11,11 +11,10 @@ const FirebaseConfig = {
     measurementId: "G-MGMVZSCFKY"
 };
 
-export const DebugMode = true;
+export const DebugMode = false;
 export const AdminNames = [
     "kayra",
-    "Lil Communist",
-    "Tahta"
+    "Lil Communist"
 ];
 
 const App = initializeApp(FirebaseConfig);
@@ -32,8 +31,19 @@ const MsgRefuseButton = document.getElementById('MsgRefuseButton');
 export function MidCont(MessageBox = {Header: "", Content: "", Accept: "", Refuse: ""}, Accept = () => console.log("Accepted"), Refuse = () => console.log("Refused"), Visible = true) {
     MsgHeader.innerHTML = MessageBox.Header;
     MsgContent.innerHTML = MessageBox.Content;
-    MsgAcceptButton.innerHTML = MessageBox.Accept;
-    MsgRefuseButton.innerHTML = MessageBox.Refuse;
+    
+    if (MessageBox.Accept) {
+        MsgRefuseButton.style.display = "none";
+        MsgAcceptButton.innerHTML = MessageBox.Accept;
+    } else if (MessageBox.Refuse) {
+        MsgAcceptButton.style.display = "none";
+        MsgRefuseButton.innerHTML = MessageBox.Refuse;
+    } else if (MessageBox.Accept && MessageBox.Refuse) {
+        MsgRefuseButton.style.display = "";
+        MsgAcceptButton.style.display = "";
+        MsgAcceptButton.innerHTML = MessageBox.Accept;
+        MsgRefuseButton.innerHTML = MessageBox.Refuse;
+    }
     
     if (!Visible) {
         MessageBoxDiv.style.opacity = "0"

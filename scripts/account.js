@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
-import * as fire from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
+import { getFirestore, collection, doc, setDoc, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
 import * as fax from "./faxpro.js";
 
 const FirebaseConfig = {
@@ -13,71 +13,97 @@ const FirebaseConfig = {
 };
 
 const App = initializeApp(FirebaseConfig);
-const Db = fire.getFirestore(App);
+const Db = getFirestore(App);
 
-const UsersCollection = fire.collection(Db, "users");
+const UsersCollection = collection(Db, "users");
 
 const UsernameInput = document.getElementById("UsernameInput");
 const PasswordInput = document.getElementById("PasswordInput");
 const SubmitButton = document.getElementById("SubmitButton");
 const UsernameLabel = document.getElementById("UsernameLabel");
 
+function WaitForElement(GetElement, timeout = 5000) {
+    return new Promise((resolve, reject) => {
+        const startTime = Date.now();
+        const CheckElement = setInterval(() => {
+            if (GetElement !== null) {
+                clearInterval(CheckElement);
+                resolve(GetElement);
+            }
+
+            if (Date.now() - startTime >= timeout) {
+                clearInterval(CheckElement);
+                reject(new Error("Element not found within timeout period"));
+            }
+        }, 100);
+    });
+}
+
 async function CheckUserDoc() {
-    const IP = fax.GetUUID();
+    if (localStorage.getItem("USER") === null && document.title === "Account") {
+        await Promise.all([
+            WaitForElement(SubmitButton),
+            WaitForElement(PasswordInput),
+            WaitForElement(UsernameInput)
+        ]);
 
-    const UserDocRef = fire.doc(UsersCollection, IP);
-    const DocSnapshot = await fire.getDoc(UserDocRef);
-
-    if (!DocSnapshot.exists()) {
-        if (document.title !== "Account") {
-            window.location.href = "../account.html";
-            return;
-        }
-    }
-
-    if (document.title === "Account") {
-        SubmitButton.addEventListener("click", async () => {
+        async function Login() {
             const Username = UsernameInput.value.trim();
             const Password = PasswordInput.value.trim();
-    
-            if (DocSnapshot.exists()) {
-                if (!Username || !Password) {
-                    return;
-                }
-    
-                const UserData = DocSnapshot.data()
-                if (String(PasswordInput.value) === String(UserData.password)) {
+
+            if (!Username || !Password) return;
+
+            const UserDocRef = query(UsersCollection, where("username", "==", Username));
+            const QuerySnapshot = await getDocs(UserDocRef);
+
+            if (!QuerySnapshot.empty) {
+                const DocSnapshot = QuerySnapshot.docs[0];
+                const UserData = DocSnapshot.data();
+
+                if (String(Password) === String(UserData.password)) {
+                    localStorage.setItem("USER", JSON.stringify(UserData));
                     window.location.href = "../index.html";
                     window.username = UserData.username;
                     window.userdata = UserData;
                     window.pp = UserData.pp;
-                    
-                    if (UsernameLabel) {
-                        UsernameLabel.innerHTML = `@${window.username}`;
-                    }
                 }
             } else {
-                await fire.setDoc(UserDocRef, {
+                const UserData = {
                     register: Math.floor(Date.now() / 1000),
                     username: Username,
                     password: Password,
-                    pp: "",
-                    ip: IP,
+                    pp: ""
+                };
 
-                    style: {
-                        backgroundColor: "rgb(70, 70, 70)",
-                        textColor: "rgb(255, 255, 255)"
-                    }
-                });
+                const NewUserDocRef = doc(UsersCollection);
+                await setDoc(NewUserDocRef, UserData);
+
+                localStorage.setItem("USER", JSON.stringify(UserData));
+            }
+        }
+
+        SubmitButton.addEventListener("click", Login);
+        PasswordInput.addEventListener("keypress", (Event) => {
+            if (Event.key === "Enter") {
+                Login();
             }
         });
-    } else {
-        if (UsernameLabel) {
-            const UserData = DocSnapshot.data()
-            window.username = UserData.username;
-            window.userdata = UserData;
-            UsernameLabel.innerHTML = `@${UserData.username}`;
-        }
+
+        UsernameInput.addEventListener("keypress", (Event) => {
+            if (Event.key === "Enter") {
+                Login();
+            }
+        });
+    } else if (document.title !== "Account") {
+        const ProfileRemoveAccountButton = document.getElementById("ProfileRemoveAccountButton");
+        const LogOutButton = document.getElementById("LogOutButton");
+
+        ProfileRemoveAccountButton.addEventListener("click", () => localStorage.removeItem("USER"));
+        LogOutButton.addEventListener("click", () => localStorage.removeItem("USER"));
+
+        UsernameLabel.innerHTML = `@${JSON.parse(localStorage.getItem("USER")).username}`;
+        window.userdata = JSON.parse(localStorage.getItem("USER"));
+        console.log(window.userdata);
     }
 }
 
