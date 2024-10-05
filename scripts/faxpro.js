@@ -14,7 +14,8 @@ const FirebaseConfig = {
 export const DebugMode = true;
 export const AdminNames = [
     "kayra",
-    "Lil Communist"
+    "Lil Communist",
+    "Tahta"
 ];
 
 const App = initializeApp(FirebaseConfig);
