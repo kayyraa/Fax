@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-storage.js";
-import { getFirestore, collection, getDocs, getDoc, deleteDoc, updateDoc, doc } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
+import { getFirestore, collection, getDocs, deleteDoc, updateDoc, doc, query, where } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
 import * as fax from "./faxpro.js";
 
 const FirebaseConfig = {
@@ -89,41 +89,50 @@ UsernameLabel.addEventListener("click", async () => {
 });
 
 ProfileRemoveAccountButton.addEventListener("click", async () => {
-    const UserDocRef = await query(UsersCollection, where("username", "==", JSON.parse(localStorage.getItem("USER")).username));
-    await deleteDoc(UserDocRef);
-    window.location.reload();
+    const UserQuery = query(UsersCollection, where("username", "==", JSON.parse(localStorage.getItem("USER")).username));
+    const QuerySnapshot = await getDocs(UserQuery);
+    if (!QuerySnapshot.empty) {
+        const UserDocRef = QuerySnapshot.docs[0].ref;
+        await deleteDoc(UserDocRef);
+        localStorage.removeItem("USER");
+        window.location.reload();
+    }
 });
 
 ProfilePhotoSaveButton.addEventListener("click", async () => {
-    const ProfilePhotoAddress = ProfilePhotoInput.value;
-    const ProfilePhotoImage = ProfileImageInput;
+    const ProfilePhotoImage = ProfileImageInput.files[0];
 
-    if (!ProfilePhotoImage.files[0] && ProfilePhotoAddress) {
-        const IP = fax.GetUUID();
-        const UserDocRef = doc(UsersCollection, IP);
-        await updateDoc(UserDocRef, {
-            pp: ProfilePhotoAddress
-        });
-
-        location.reload();
-    } else if (ProfilePhotoImage.files[0] && !ProfilePhotoAddress) {
-        const File = ProfilePhotoImage.files[0];
-
-        const StorageRef = ref(Storage, `uploads/${File.name}`);
+    if (ProfilePhotoImage) {
+        const StorageRef = ref(Storage, `uploads/${ProfilePhotoImage.name}`);
 
         ProfilePhotoSaveButton.innerHTML = "Uploading Image";
         ProfilePhotoSaveButton.disabled = true;
-        await uploadBytes(StorageRef, File).then(async (Snapshot) => {
-            const URL = await getDownloadURL(StorageRef);
-            const UserDocRef = doc(UsersCollection, fax.GetUUID());
-            await updateDoc(UserDocRef, {
-                pp: URL
-            });
-        }).catch((Error) => {
-            console.error('Upload failed:', Error);
-        });
 
-        location.reload();
+        try {
+            await uploadBytes(StorageRef, ProfilePhotoImage);
+            const URLString = await getDownloadURL(StorageRef);
+            
+            const UserQuery = query(UsersCollection, where("username", "==", JSON.parse(localStorage.getItem("USER")).username));
+            const QuerySnapshot = await getDocs(UserQuery);
+            if (!QuerySnapshot.empty) {
+                const UserDocRef = QuerySnapshot.docs[0].ref;
+
+                await updateDoc(UserDocRef, {
+                    pp: URLString
+                });
+
+                const UserData = JSON.parse(localStorage.getItem("USER"));
+                UserData.pp = URLString; 
+                localStorage.setItem("USER", JSON.stringify(UserData));
+                ProfileImageLabel.src = URLString; 
+            }
+            ProfilePhotoSaveButton.innerHTML = "Save Photo";
+            ProfilePhotoSaveButton.disabled = false;
+        } catch (Error) {
+            console.error('Upload failed:', Error);
+            ProfilePhotoSaveButton.innerHTML = "Save Photo";
+            ProfilePhotoSaveButton.disabled = false;
+        }
     }
 });
 

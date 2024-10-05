@@ -1,7 +1,5 @@
 import * as fax from "./faxpro.js";
 
-if (!fax.Announcements) return;
-
 const Announcements = [
     {
         String: {
@@ -20,6 +18,7 @@ const Announcements = [
 ];
 
 Announcements.forEach(Announcement => {
+    if (!fax.Announcements) return;
     fax.MidCont(
         {
             Header: Announcement.String.Header,

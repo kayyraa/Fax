@@ -14,7 +14,6 @@ const FirebaseConfig = {
 
 const App = initializeApp(FirebaseConfig);
 const Db = getFirestore(App);
-
 const UsersCollection = collection(Db, "users");
 
 const UsernameInput = document.getElementById("UsernameInput");
@@ -30,7 +29,6 @@ function WaitForElement(GetElement, timeout = 5000) {
                 clearInterval(CheckElement);
                 resolve(GetElement);
             }
-
             if (Date.now() - startTime >= timeout) {
                 clearInterval(CheckElement);
                 reject(new Error("Element not found within timeout period"));
@@ -40,60 +38,63 @@ function WaitForElement(GetElement, timeout = 5000) {
 }
 
 async function CheckUserDoc() {
-    if (localStorage.getItem("USER") === null && document.title === "Account") {
-        await Promise.all([
-            WaitForElement(SubmitButton),
-            WaitForElement(PasswordInput),
-            WaitForElement(UsernameInput)
-        ]);
+    if (localStorage.getItem("USER") === null) {
+        if (document.title === "Account") {
+            await Promise.all([
+                WaitForElement(SubmitButton),
+                WaitForElement(PasswordInput),
+                WaitForElement(UsernameInput)
+            ]);
 
-        async function Login() {
-            const Username = UsernameInput.value.trim();
-            const Password = PasswordInput.value.trim();
+            async function Login() {
+                const Username = UsernameInput.value.trim();
+                const Password = PasswordInput.value.trim();
 
-            if (!Username || !Password) return;
+                if (!Username || !Password) return;
 
-            const UserDocRef = query(UsersCollection, where("username", "==", Username));
-            const QuerySnapshot = await getDocs(UserDocRef);
+                const UserQuery = query(UsersCollection, where("username", "==", Username));
+                const QuerySnapshot = await getDocs(UserQuery);
 
-            if (!QuerySnapshot.empty) {
-                const DocSnapshot = QuerySnapshot.docs[0];
-                const UserData = DocSnapshot.data();
+                if (!QuerySnapshot.empty) {
+                    const DocSnapshot = QuerySnapshot.docs[0];
+                    const UserData = DocSnapshot.data();
 
-                if (String(Password) === String(UserData.password)) {
+                    if (String(Password) === String(UserData.password)) {
+                        localStorage.setItem("USER", JSON.stringify(UserData));
+                        window.location.href = "../index.html";
+                        window.username = UserData.username;
+                        window.userdata = UserData;
+                        window.pp = UserData.pp;
+                    }
+                } else {
+                    const UserData = {
+                        register: Math.floor(Date.now() / 1000),
+                        username: Username,
+                        password: Password,
+                        pp: ""
+                    };
+
+                    const NewUserDocRef = doc(UsersCollection);
+                    await setDoc(NewUserDocRef, UserData);
                     localStorage.setItem("USER", JSON.stringify(UserData));
-                    window.location.href = "../index.html";
-                    window.username = UserData.username;
-                    window.userdata = UserData;
-                    window.pp = UserData.pp;
                 }
-            } else {
-                const UserData = {
-                    register: Math.floor(Date.now() / 1000),
-                    username: Username,
-                    password: Password,
-                    pp: ""
-                };
-
-                const NewUserDocRef = doc(UsersCollection);
-                await setDoc(NewUserDocRef, UserData);
-
-                localStorage.setItem("USER", JSON.stringify(UserData));
             }
+
+            SubmitButton.addEventListener("click", Login);
+            PasswordInput.addEventListener("keypress", (Event) => {
+                if (Event.key === "Enter") {
+                    Login();
+                }
+            });
+
+            UsernameInput.addEventListener("keypress", (Event) => {
+                if (Event.key === "Enter") {
+                    Login();
+                }
+            });
+        } else {
+            location.href = "../account.html"; 
         }
-
-        SubmitButton.addEventListener("click", Login);
-        PasswordInput.addEventListener("keypress", (Event) => {
-            if (Event.key === "Enter") {
-                Login();
-            }
-        });
-
-        UsernameInput.addEventListener("keypress", (Event) => {
-            if (Event.key === "Enter") {
-                Login();
-            }
-        });
     } else if (document.title !== "Account") {
         const ProfileRemoveAccountButton = document.getElementById("ProfileRemoveAccountButton");
         const LogOutButton = document.getElementById("LogOutButton");

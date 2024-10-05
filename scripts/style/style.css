@@ -10,7 +10,7 @@
 
     z-index: 1;
 
-    gap: 2vh;
+    gap: 5vh;
 
     background-color: rgba(0, 0, 0, 0.25);
     backdrop-filter: blur(4px);
@@ -389,6 +389,16 @@
 
 #AdminLabel:hover {
     opacity: 1;
+}
+
+#AccountButton {
+    background-color: white;
+    color: black;
+    padding-left: 2vh;
+    padding-right: 2vh;
+    font-size: 2vh;
+    border-radius: 1em;
+    cursor: pointer;
 }
 
 .ProfileContainer {
