@@ -29,14 +29,18 @@
     transition: all 0.25s ease;
 }
 
-.Topbar > img {
+.Topbar > img#TopbarIcon {
     position: absolute;
     left: 2vh;
     height: 50%;
     cursor: pointer;
 }
 
-.Topbar > img:hover {
+.Topbar > img {
+    height: 75%;
+}
+
+.Topbar img#TopbarIcon:hover {
     scale: 1.125;
 }
 
@@ -419,6 +423,7 @@
 
 #AdminLabel:hover {
     opacity: 1;
+    background-position-x: left 20px;
 }
 
 #AccountButton {
