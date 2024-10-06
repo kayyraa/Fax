@@ -74,6 +74,14 @@ OnLoadOptions = {
                 const UQS = await getDocs(UDR);
                 const UserDocRef = UQS.docs[0];
 
+                await updateDoc(AuthorDocRef.ref, {
+                    ban: {
+                        banned: false,
+                        until: 0,
+                        reason: ""
+                    }
+                });
+
                 if (fax.DebugMode) {
                     console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
                     console.log(`fax.load.replies > ${Fax.replies}`);
@@ -160,7 +168,7 @@ OnLoadOptions = {
                 ProfileContainer.appendChild(ProfilePhoto); 
 
                 const CreatorLabel = document.createElement("span");
-                CreatorLabel.innerHTML = `@${Author} ${fax.AdminNames.includes(Author) ? "-" : ""}`;
+                CreatorLabel.innerHTML = `@${Author}`;
                 CreatorLabel.classList.add("FaxButtonCreatorLabel");
                 ProfileContainer.appendChild(CreatorLabel);
 

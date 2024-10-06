@@ -72,7 +72,13 @@ async function CheckUserDoc() {
                         username: Username,
                         password: Password,
                         bio: "",
-                        pp: ""
+                        pp: "",
+
+                        ban: {
+                            banned: false,
+                            until: 0,
+                            reason: ""
+                        }
                     };
 
                     const NewUserDocRef = doc(UsersCollection);

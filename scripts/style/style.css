@@ -439,6 +439,28 @@
 .ProfileContainer {
     display: flex;
     flex-direction: row;
+    gap: 1vh;
+}
+
+.ProfileContainer span {
+    font-size: 3vh;
+    margin-left: 1vh;
+    margin-top: 2.5vh;
+    transition: all 0.25s ease;
+}
+
+.ProfileContainer span[button] {
+    background-color: rgba(0, 0, 0, 0.25);
+    font-size: 2vh;
+    padding-left: 3vh;
+    padding-right: 3vh;
+    border-radius: 2em;
+    text-align: center;
+    align-content: center;
+}
+
+.ProfileContainer span[button]:hover {
+    background-color: rgba(0, 0, 0, 0.5);
 }
 
 .FaxButtonProfilePhoto {
@@ -448,12 +470,6 @@
     aspect-ratio: 1 / 1;
     border-radius: 100%;
     border: 1px solid white;
-}
-
-.FaxButtonCreatorLabel {
-    font-size: 3vh;
-    margin-left: 1vh;
-    margin-top: 2.5vh;
 }
 
 .Profile {
