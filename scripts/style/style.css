@@ -29,10 +29,6 @@
     transition: all 0.25s ease;
 }
 
-.Topbar *:hover {
-    opacity: 0.5;
-}
-
 .Topbar > img {
     position: absolute;
     left: 2vh;
@@ -42,7 +38,6 @@
 
 .Topbar > img:hover {
     scale: 1.125;
-    opacity: 1;
 }
 
 .Topbar > span {
@@ -434,6 +429,12 @@
     font-size: 2vh;
     border-radius: 1em;
     cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+#AccountButton:hover {
+    background-color: black;
+    color: white;
 }
 
 .ProfileContainer {
