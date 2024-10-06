@@ -23,15 +23,19 @@ button {
     border: none;
 }
 
-input {
+input, textarea {
     font-family: "DM Mono", monospace;
+    border: none;
+    outline: none;
+}
+
+input[type="checkbox"] {
+    
 }
 
 textarea {
-    font-family: "DM Mono", monospace;
     background-color: rgb(40, 40, 40);
     color: white;
-    border: none;
 }
 
 button:hover {

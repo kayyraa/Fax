@@ -26,9 +26,7 @@ const FaxSubmitButton = document.getElementById("FaxSubmitButton");
 const FilterButton = document.getElementById("FilterButton");
 const FilterInput = document.getElementById("FilterInput");
 const ResultsLabel = document.getElementById("ResultsLabel");
-const AdminLabel = document.getElementById("AdminLabel");
-const Favicon = document.getElementById("Favicon");
-const TopbarIcon = document.getElementById("TopbarIcon");
+const AdminHTLabel = document.getElementById("AdminLabel");
 
 function LoadFaxes(
 OnlyLoadOptions = {
@@ -67,7 +65,15 @@ OnLoadOptions = {
             Faxes.forEach(async Fax => {
                 const FaxDocRef = await doc(FaxesCollection, Fax.id);
                 const FaxDocSnapshot = await getDoc(FaxDocRef);
-   
+
+                const ADR = await query(UsersCollection, await where("username", "==", Fax.author));
+                const AQS = await getDocs(ADR);
+                const AuthorDocRef = AQS.docs[0];
+
+                const UDR = await query(UsersCollection, await where("username", "==", JSON.parse(localStorage.getItem("USER")).username));
+                const UQS = await getDocs(UDR);
+                const UserDocRef = UQS.docs[0];
+
                 if (fax.DebugMode) {
                     console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
                     console.log(`fax.load.replies > ${Fax.replies}`);
@@ -463,10 +469,7 @@ OnLoadOptions = {
                         ReplyTimestamp.innerHTML = `${TimeAgo(Reply.timestamp, Math.floor(Date.now() / 1000), true)} -`;
                         ReplyContainer.appendChild(ReplyTimestamp);
 
-                        const IP = fax.GetUUID();
-                        const UserDocRef = doc(UsersCollection, IP);
-                        const DocSnapshot = await getDoc(UserDocRef);
-                        const DocData = await DocSnapshot.data();
+                        const DocData = JSON.parse(localStorage.getItem("USER"));
 
                         if (String(Reply.author).toLowerCase() === DocData.username) {
                             const RemoveReplyButton = document.createElement("div");
@@ -513,11 +516,8 @@ OnLoadOptions = {
                     NoRepliesMessage.innerHTML = "No replies yet.";
                     RepliesContainer.appendChild(NoRepliesMessage);
                 }
-
-                const IP = fax.GetUUID();
-                const UserDocRef = doc(UsersCollection, IP);
-                const DocSnapshot = await getDoc(UserDocRef);
-                const DocData = await DocSnapshot.data();
+                
+                const DocData = await UserDocRef.data();
                 var IsAuthor = Author === DocData.username;
 
                 const AuthorDocQuery = query(UsersCollection, where("username", '==', Author));
@@ -531,12 +531,7 @@ OnLoadOptions = {
                 });
 
                 if (!fax.AdminNames.includes(DocData.username)) {
-                    if (AdminLabel) {
-                        AdminLabel.remove();
-                    }
-                } else {
-                    Favicon.href = "../images/GoldenFavicon.svg";
-                    TopbarIcon.src = "../images/GoldenFavicon.svg";
+                    AdminHTLabel.remove();
                 }
 
                 if (IsAuthor || fax.AdminNames.includes(DocData.username)) {

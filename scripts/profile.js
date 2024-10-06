@@ -30,10 +30,13 @@ const ProfileViewsLabel = document.getElementById("ProfileViewsLabel");
 const ProfilePostsLabel = document.getElementById("ProfilePostsLabel");
 const ProfileTimestampLabel = document.getElementById("ProfileTimestampLabel");
 const ProfileImageLabel = document.getElementById("ProfileImageLabel");
+const ProfileBioLabel = document.getElementById("ProfileBioLabel");
 
 const ProfilePhotoInput = document.getElementById("ProfilePhotoInput");
 const ProfileImageInput = document.getElementById("ProfileImageInput");
+const ProfileBioInput = document.getElementById("ProfileBioInput");
 
+const ProifleBioSaveButton = document.getElementById("ProifleBioSaveButton");
 const ProfilePhotoSaveButton = document.getElementById("ProfilePhotoSaveButton");
 const ProfileRemoveAccountButton = document.getElementById("ProfileRemoveAccountButton");
 
@@ -85,6 +88,16 @@ UsernameLabel.addEventListener("click", async () => {
         ProfileLikesLabel.innerHTML = `${UserLikes} Like${UserLikes > 1 ? "s" : ""}`;
         ProfileViewsLabel.innerHTML = `${UserViews} View${UserViews > 1 ? "s" : ""}`;
         ProfileTimestampLabel.innerHTML = FormatDate(window.userdata.register);
+
+        const Username = JSON.parse(localStorage.getItem("USER")).username;
+        const UDR = query(UsersCollection, where("username", "==", Username));
+        const UQS = await getDocs(UDR);
+            
+        const UserDocSnap = UQS.docs[0];
+        const UserBio = UserDocSnap.data().bio;
+            
+        ProfileBioLabel.innerHTML = UserBio;
+        ProfileBioInput.value = UserBio;
     }
 });
 
@@ -143,4 +156,23 @@ ProfileImageLabel.addEventListener("click", () => {
     ProfileImageLabel.style.top = Focus.ProfileImage ? "50%" : "";
     ProfileImageLabel.style.transform = Focus.ProfileImage ? "translate(-50%, -50%)" : "";
     ProfileImageLabel.style.width = Focus.ProfileImage ? "25%" : "";
+});
+
+ProifleBioSaveButton.addEventListener("click", async () => {
+    const Username = JSON.parse(localStorage.getItem("USER")).username;
+    const UDR = query(UsersCollection, where("username", "==", Username));
+    const UQS = await getDocs(UDR);
+
+    const UserDocSnap = UQS.docs[0];
+    const NewBio = ProfileBioInput.value;
+
+    await updateDoc(UserDocSnap.ref, { 
+        bio: NewBio
+    });
+
+    const UserData = UserDocSnap.data();
+    UserData.bio = NewBio;
+    localStorage.setItem("USER", JSON.stringify(UserData));
+
+    location.reload();
 });

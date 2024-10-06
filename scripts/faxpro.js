@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
-import { getFirestore, collection, doc, getDocs, addDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
+import { getFirestore, collection, doc, getDocs, addDoc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
 
 const FirebaseConfig = {
     apiKey: "AIzaSyCMyS_nsuyVbEfMB06TY7cfUMK2Kj5qk9Q",
@@ -14,8 +14,7 @@ const FirebaseConfig = {
 export const Announcements = false;
 export const DebugMode = false;
 export const AdminNames = [
-    "kayra",
-    "Lil Communist"
+    "kayra"
 ];
 
 const App = initializeApp(FirebaseConfig);
@@ -108,4 +107,12 @@ export function GetUUID() {
     }
 
     return `${navigator.language.slice(0, 2)}${navigator.hardwareConcurrency}${CoreMapping[navigator.hardwareConcurrency]}${Intl.DateTimeFormat().resolvedOptions().timeZone.replace("/", "")}`.trim().toLowerCase();
+}
+
+export async function UpdateDoc(DocRef, Fields) {
+    await updateDoc(DocRef, Fields);
+}
+
+export async function DeleteDoc(DocRef) {
+    await deleteDoc(DocRef);
 }

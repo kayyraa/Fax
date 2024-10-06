@@ -71,6 +71,7 @@ async function CheckUserDoc() {
                         register: Math.floor(Date.now() / 1000),
                         username: Username,
                         password: Password,
+                        bio: "",
                         pp: ""
                     };
 
@@ -104,7 +105,6 @@ async function CheckUserDoc() {
 
         UsernameLabel.innerHTML = `@${JSON.parse(localStorage.getItem("USER")).username}`;
         window.userdata = JSON.parse(localStorage.getItem("USER"));
-        console.log(window.userdata);
     }
 }
 
