@@ -1,0 +1,89 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Gabarito:wght@400..900&family=Noto+Serif+Oriya:wght@400..700&display=swap');
+
+body {
+    background-color: rgb(60, 60, 60);
+    color: white;
+    overflow: hidden;
+    font-family: "DM Mono", monospace;
+
+    user-select: none !important;
+    -moz-user-select: none !important;
+    -webkit-user-select: none !important;
+}
+
+button:disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+button {
+    font-family: "DM Mono", monospace;
+    border: none;
+}
+
+input, textarea {
+    font-family: "DM Mono", monospace;
+    border: none;
+    outline: none;
+}
+
+input[type="checkbox"] {
+    
+}
+
+textarea {
+    background-color: rgb(40, 40, 40);
+    color: white;
+}
+
+button:hover {
+    opacity: 0.8;
+    cursor: pointer;
+}
+
+input:hover {
+    opacity: 0.8;
+}
+
+*[link]:hover {
+    text-decoration: underline;
+    color: #89a3da;
+}
+
+*[hreflink] {
+    color: #7998dc;
+}
+
+*[hreflink]:hover {
+    text-decoration: underline;
+    color: #4174e3;
+}
+
+a:hover {
+    text-decoration: underline;
+    color: #89a3da;
+}
+
+code {
+    font-family: monospace;
+    font-weight: 100;
+}
+
+::-webkit-scrollbar {
+    width: 5px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.5);
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+    cursor: pointer;
+}
