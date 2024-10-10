@@ -1,0 +1,25 @@
+{
+    "cleanUrls": true,
+    "headers": [
+        {
+            "source": "/(.*)",
+            "headers": [
+                {
+                    "key": "Content-Security-Policy",
+                    "value": "frame-src *;"
+                },
+                {
+                    "key": "X-Frame-Options",
+                    "value": "ALLOWALL"
+                }
+            ]
+        }
+    ],
+    "routes": [
+        {
+            "src": "/(.*)",
+            "dest": "/404.html",
+            "status": 404
+        }
+    ]
+}
