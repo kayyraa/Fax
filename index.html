@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Fax Paged</title>
+
+        <link rel="stylesheet" href="scripts/style/style.css">
+        <link rel="stylesheet" href="scripts/style/format.css">
+        <link rel="stylesheet" href="scripts/style/nodes.css">
+        <link id="Favicon" rel="shortcut icon" href="images/Favicon.svg" type="image/x-icon">
+
+        <script type="module" src="scripts/announcements.js"></script>
+        <script type="module" src="scripts/hud.js"></script>
+        <script type="module" src="scripts/profile.js"></script>
+        <script type="module" src="scripts/account.js"></script>
+        <script type="module" src="scripts/posts.js"></script>
+        <script type="module" src="scripts/faxpro.js"></script>
+
+        <script type="module" src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script type="module" src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js"></script>
+        <script type="module" src="https://www.gstatic.com/firebasejs/10.13.2/firebase-analytics.js"></script>
+        <script type="module" src="https://www.gstatic.com/firebasejs/9.12.0/firebase-storage.js"></script>
+    </head>
+    <body>
+        <div id="LinkHrefLabel">https://example.com</div>
+
+        <div id="MessageBox">
+            <header id="MsgHeader">Header</header>
+            <span id="MsgContent">Content</span>
+            <button color accept id="MsgAcceptButton">Accept</button>
+            <button color refuse id="MsgRefuseButton">Refuse</button>
+        </div>
+
+        <div id="Topbar" class="Topbar">
+            <div>
+                <img draggable="false" onclick="location.reload()" src="./images/Favicon.svg">
+                <img onclick="document.getElementById('NotificationCenter').style.display = ''" draggable="false" id="NotificationsButton" src="./images/Notifications.svg">
+            </div>
+            <span id="AdminLabel">Admin</span>
+            <span id="UsernameLabel">LOGGING IN</span>
+        </div>
+
+        <div style="display: none;" id="NotificationCenter">
+            <nav onclick="document.getElementById('NotificationCenter').style.display = 'none'">X</nav>
+        </div>
+
+        <div class="FaxesContainer" id="FaxesContainer">
+            <div id="FaxCreateButton" class="FaxButton">
+                <input id="FaxTitleInput" autocomplete="off" placeholder="Title..." type="text">
+                <textarea id="FaxContentInput" placeholder="Content..."></textarea>
+                <button id="FaxSubmitButton">Post</button>
+                <input id="FilterInput" autocomplete="off" placeholder="Search..." type="text">
+                <button id="FilterButton">Filter</button>
+                <span id="ResultsLabel">Loading Results</span>
+            </div>
+        </div>
+
+        <div class="Profile" id="AuthorProfile">
+            <img draggable="false" id="AuthorProfileImageLabel" src="./images/DefaultUser.svg">
+            <div id="AuthorProfileUsername">@loading</div>
+            <div id="AuthorProfileBio">Loading</div>
+            <div id="AuthorProfileLikesLabel">Loading</div>
+            <div id="AuthorProfileViewsLabel">Loading</div>
+            <div id="AuthorProfilePostsLabel">Loading</div>
+            <button onclick="location.reload()" id="ProfileBackButton">Back</button>
+        </div>
+
+        <div class="Profile" id="Profile">
+            <div>
+                <img draggable="false" id="ProfileImageLabel" src="./images/DefaultUser.svg">
+                <section>
+                    <button id="ProfilePhotoSaveButton">Save Profile Photo</button>
+                    <input id="ProfileImageInput" type="file" accept="image/*,.gif">
+                </section>
+            </div>
+            <div id="ProfileUsernameLabel">Loading</div>
+            <div id="ProfileTimestampLabel">Loading</div>
+            <div id="ProfileLikesLabel">Loading</div>
+            <div id="ProfileViewsLabel">Loading</div>
+            <div id="ProfilePostsLabel">Loading</div>
+            <section id="ProfileBioSection">
+                <ri>Bio</ri>
+                <div id="ProfileBioLabel">Loading</div>
+                <textarea placeholder="Write bio here..." id="ProfileBioInput"></textarea>
+                <button id="ProfileBioSaveButton">Save</button>
+            </section>
+            <button id="ProfileRemoveAccountButton">Remove Account</button>
+            <button id="LogOutButton" onclick="window.location.href = './account.html'">Log Out</button>
+            <button onclick="location.reload()" id="ProfileBackButton">Back</button>
+
+            <section>
+                <span>Views</span>
+                <canvas id="ProfileGrowthChart"></canvas>
+            </section>
+        </div>
+
+        <script type="module">
+            import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
+            import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-analytics.js";
+          
+            const firebaseConfig = {
+              apiKey: "AIzaSyCMyS_nsuyVbEfMB06TY7cfUMK2Kj5qk9Q",
+              authDomain: "faxpro-42ee0.firebaseapp.com",
+              projectId: "faxpro-42ee0",
+              storageBucket: "faxpro-42ee0.appspot.com",
+              messagingSenderId: "87164703923",
+              appId: "1:87164703923:web:2ca34ac33c34852f178cc6",
+              measurementId: "G-MGMVZSCFKY"
+            };
+          
+            const app = initializeApp(firebaseConfig);
+            const analytics = getAnalytics(app);
+        </script>
+    </body>
+</html>
